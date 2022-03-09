@@ -4,6 +4,7 @@ function img = renderText(someText, fontName, fontSize, sampsPerPt, antiAlias, f
 %
 % Makes some Java calls to render text into a 2d image. Make sure you launch
 % matlab with the JVM enabled!
+% sampsPerPt = 16;
 %
 % Example:
 %  img = renderText('WHEN we look to the individuals of the same variety...','Sans',18,2);

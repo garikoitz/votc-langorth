@@ -19,21 +19,23 @@ function [ ] = RenderWriteWord(word, fuente, font_size, samples_per_point, tipo,
 %               - 'cb': chequerboard
 %               
     %% Create the original image based on Vistalabs function
-    img=my_renderText(word, fuente, font_size, samples_per_point);
+    img=my_renderText(word, fuente, font_size, samples_per_point,1);
+    % someText, fontName, fontSize, sampsPerPt, antiAlias, fractionalMetrics, bold
     %img=my_renderText('prueba', 'Courier', 12, 8);
     %tipo = 'pw'
     %path_to_write='./'
     %imfilename = 'borrar.png'
+    lang = imfilename(1:2);
     if strcmp(tipo, 'pw')   
-        img_filename_with_path = [path_to_write, filesep, 'PW_', imfilename];
-    elseif strcmp(tipo, 'georg')
-        img_filename_with_path = [path_to_write, filesep, 'FF_', imfilename];    
+        img_filename_with_path = fullfile(path_to_write,strrep(imfilename,lang,[lang '_PW']));
+    elseif strcmp(tipo, 'ff')
+        img_filename_with_path = fullfile(path_to_write,strrep(imfilename,lang,[lang '_FF']));
     elseif strcmp(tipo, 'cs')
-        img_filename_with_path = [path_to_write, filesep, 'CS_', imfilename];  
+        img_filename_with_path = fullfile(path_to_write,strrep(imfilename,lang,[lang '_CS']));
     elseif strcmp(tipo, 'cb')
-        img_filename_with_path = [path_to_write, filesep, 'CB_', imfilename];  
+        img_filename_with_path = fullfile(path_to_write,strrep(imfilename,lang,[lang '_CB']));
     else
-        img_filename_with_path = [path_to_write, filesep, 'RW_', imfilename];
+        img_filename_with_path = fullfile(path_to_write,strrep(imfilename,lang,[lang '_RW']));
     end
     
     %% Trim empty space above and below image
@@ -63,12 +65,12 @@ function [ ] = RenderWriteWord(word, fuente, font_size, samples_per_point, tipo,
         columns = ceil(width/10);
         
         scb=wordScrambleImage(img, rows, columns);
-        scb_filename_with_path = [path_to_write, filesep, 'SD_', imfilename];
+        scb_filename_with_path = fullfile(path_to_write,strrep(imfilename,lang,[lang '_SD']));
 
         
     %% Create PhaseScrambled image
         pscb=phaseScramble(img, PhaseScrambleW); % w can go from 0 to 1, default 1, amount of phasing it is being done
-        pscb_filename_with_path = [path_to_write, filesep, 'PS_', imfilename];
+        pscb_filename_with_path = fullfile(path_to_write,strrep(imfilename,lang,[lang '_PS']));
 
     %% Create checkerboard with same size as word
     
@@ -101,7 +103,7 @@ function [ ] = RenderWriteWord(word, fuente, font_size, samples_per_point, tipo,
         % display
         % figure(1); imagesc(BWcheck); colormap gray; truesize
         % figure(2); imagesc(BWrevCheck); colormap gray; truesize
-        checkerboard_filename_with_path = [path_to_write, filesep, 'CB_', imfilename];
+        checkerboard_filename_with_path = fullfile(path_to_write,strrep(imfilename,lang,[lang '_CB']));
     if strcmp(tipo, 'cb')
         img = BWcheck;
     end
