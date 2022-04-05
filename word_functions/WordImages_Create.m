@@ -4,7 +4,7 @@ bdir = fullfile(vlRP,'DATA');
 imFileType = 'png';
 imFolder   = '/Users/glerma/Documents/BCBL_PROJECTS/2022 votc-langorth (Kepa, Manolo)/images';
 
-WordImages_Create(WordPath, imFileType)
+WordImages_Create(WordPath, imFileType, imFolder)
 %}
 
 

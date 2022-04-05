@@ -19,7 +19,11 @@ function [ ] = RenderWriteWord(word, fuente, font_size, samples_per_point, tipo,
 %               - 'cb': chequerboard
 %               
     %% Create the original image based on Vistalabs function
-    img=my_renderText(word, fuente, font_size, samples_per_point,1);
+    if ischar(word)
+        img = my_renderText(word, fuente, font_size, samples_per_point,1);
+    else
+        img = word;
+    end
     % someText, fontName, fontSize, sampsPerPt, antiAlias, fractionalMetrics, bold
     %img=my_renderText('prueba', 'Courier', 12, 8);
     %tipo = 'pw'
