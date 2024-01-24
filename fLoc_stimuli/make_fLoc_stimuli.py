@@ -15,7 +15,7 @@ def get_image_files(directory):
 
 def create_word_images(category_of_your_stimuli, word_list, 
                        backgrounds_directory, output_dir, 
-                       fonts_directory, font_size=150):
+                       fonts_directory, font_size=150, doSC, doCB):
     # Get all image files for backgrounds
     background_paths = get_image_files(backgrounds_directory)
 
@@ -29,13 +29,6 @@ def create_word_images(category_of_your_stimuli, word_list,
         background = Image.open(bg_path)
 
         pic_width, pic_height = background.width, background.height
-
-
-        # Initialize parameters for text placement
-        # TODO: make it automated that the words show in the middle
-        current_x = -200+ (pic_width // 2)  # Starting X position; adjust as needed
-        y_position = -200+ (pic_height // 2)  # Center Y position
-
 
         with Image.open(bg_path).convert("RGBA") as base:
         # make a blank image for the text, initialized to transparent text color
@@ -59,6 +52,50 @@ def create_word_images(category_of_your_stimuli, word_list,
             out = out.convert("RGB")
             output_path = os.path.join(output_dir, f"{category_of_your_stimuli}-{idx}.jpeg")
             out.save(output_path)
+            
+            if doCB:
+                top_image = Image.new('RGB', [w, h], (255, 255, 255))
+                draw = ImageDraw.Draw(top_image)
+                
+                # Set the colors
+                number_of_square_across = 10
+
+                # Set the colors
+                color_one = (0, 0, 0)
+                color_two = (0, 0, 255)
+
+                length_of_square = h/number_of_square_across
+                length_of_two_squares = h/number_of_square_across*2
+                pixels = top_image.load()  # create the pixel map
+
+                for i in range(h):
+                    # for every 100 pixels out of the total 500 
+                    # if its the first 50 pixels
+                    if (i % length_of_two_squares) >= length_of_square:
+                        for j in range(w):
+                            if (j % length_of_two_squares) < length_of_square:
+                                pixels[i,j] = color_one
+                            else:
+                                pixels[i,j] = color_two
+
+                    # else its the second 50 pixels         
+                    else:
+                        for j in range(w):
+                            if (j % length_of_two_squares) >= length_of_square:
+                                pixels[i,j] = color_one
+                            else:
+                                pixels[i,j] = color_two
+
+                top_image.show()
+                
+                
+                
+                
+                
+                
+                
+                
+            if doSC:    
 
 def get_ttf_fonts(fonts_directory):
     """List all .ttf font files in the specified directory."""
@@ -78,6 +115,8 @@ fonts_directory = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
 
 # VARIABLES
 font_size = 150
+doSC = True
+doCB = True
 
 # These are the lists of words we need to generate, this comes from fLoc
 #         stim_set1 = {'body' 'JP_word1' 'adult' 'ff' 'cb'};
@@ -87,13 +126,13 @@ langs = ['ES','EU','JP','ZH','DE']
 
 categories_textfiles_dict = {
     "ES_word1":'RW_ES_CB1_80_justwords.txt',
-    "ES_word2":'RW_ES_CB2_80_justwords.txt',
-    "EU_word1":'RW_EU_CB1_80_justwords.txt',
-    "EU_word2":'RW_EU_CB2_80_justwords.txt',
-    "JP_word1":'RW_JP_CB1_72_justwords.txt',
-    "JP_word2":'RW_JP_CB2_72_justwords.txt',
-    "ZH_word1":'RW_ZH_CB1_80_justwords.txt',
-    "ZH_word2":'RW_ZH_CB2_80_justwords.txt',
+    # "ES_word2":'RW_ES_CB2_80_justwords.txt',
+    # "EU_word1":'RW_EU_CB1_80_justwords.txt',
+    # "EU_word2":'RW_EU_CB2_80_justwords.txt',
+    # "JP_word1":'RW_JP_CB1_72_justwords.txt',
+    # "JP_word2":'RW_JP_CB2_72_justwords.txt',
+    # "ZH_word1":'RW_ZH_CB1_80_justwords.txt',
+    # "ZH_word2":'RW_ZH_CB2_80_justwords.txt',
     # "DE_word1":'RW_DE_CB1_80_justwords.txt',
     # "DE_word2":'RW_DE_CB2_80_justwords.txt',
 }
@@ -108,5 +147,5 @@ for category_of_your_stimuli in categories_textfiles_dict.keys():
     if not os.path.exists(output_dir): os.makedirs(output_dir)
 
     create_word_images(category_of_your_stimuli, word_list, backgrounds_directory, 
-                       output_dir, fonts_directory, font_size)
+                       output_dir, fonts_directory, font_size, doSC, doCB)
 
