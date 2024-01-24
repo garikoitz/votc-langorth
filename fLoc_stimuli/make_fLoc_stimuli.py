@@ -16,6 +16,7 @@ def get_image_files(directory):
 def create_word_images(category_of_your_stimuli, word_list, 
                        backgrounds_directory, output_dir, 
                        fonts_directory, font_size=150, doSC, doCB):
+
     # Get all image files for backgrounds
     background_paths = get_image_files(backgrounds_directory)
 
@@ -122,7 +123,7 @@ doCB = True
 #         stim_set1 = {'body' 'JP_word1' 'adult' 'ff' 'cb'};
 #         stim_set2 = {'limb' 'JP_word2' 'child' 'cs' 'sc'};
 
-langs = ['ES','EU','JP','ZH','DE']
+languages = ['ES','EU','JP','ZH','DE']
 
 categories_textfiles_dict = {
     "ES_word1":'RW_ES_CB1_80_justwords.txt',
