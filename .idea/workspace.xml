@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="e701f406-5ad3-4991-acc6-8723e0703026" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/fLoc_stimuli/make_fLoc_stimuli.py" beforeDir="false" afterPath="$PROJECT_DIR$/fLoc_stimuli/make_fLoc_stimuli.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fLoc_stimuli/test_jupyter_for_creating_stimuli.ipynb" beforeDir="false" afterPath="$PROJECT_DIR$/fLoc_stimuli/test_jupyter_for_creating_stimuli.ipynb" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -70,7 +72,7 @@
       <option name="presentableId" value="Default" />
       <updated>1706095951814</updated>
       <workItem from="1706095955475" duration="8669000" />
-      <workItem from="1706129853475" duration="9498000" />
+      <workItem from="1706129853475" duration="14632000" />
     </task>
     <servers />
   </component>

@@ -13,100 +13,108 @@ def get_image_files(directory):
             image_files.append(os.path.join(directory, file))
     return image_files
 
-def create_word_images(category_of_your_stimuli, word_list, 
-                       backgrounds_directory, output_dir, 
-                       fonts_directory, font_size=150, doSC, doCB):
+def create_checkboard(background_path, output_path, word, fnt):
+    # Load the background image
+    background = Image.open(background_path)
 
-    # Get all image files for backgrounds
-    background_paths = get_image_files(backgrounds_directory)
+    draw = ImageDraw.Draw(background)
 
-    # Get all .ttf fonts from the specified directory
-    fnt = ImageFont.truetype(fonts_directory, font_size)
+    # draw text, half opacity, center the image
+    _, _, w, h = draw.textbbox((0, 0), word, font = fnt)
+    canvas_width, canvas_height= background.size
 
-    for idx in range(len(word_list)):
-        # Select a random background
-        word = word_list[idx]
-        bg_path = random.choice(background_paths)
-        background = Image.open(bg_path)
-
-        pic_width, pic_height = background.width, background.height
-
-        with Image.open(bg_path).convert("RGBA") as base:
-        # make a blank image for the text, initialized to transparent text color
-            txt = Image.new("RGBA", base.size, (255, 255, 255,0))
-
-            # get a drawing context
-            d = ImageDraw.Draw(txt)
-
-            # draw text, half opacity, center the image
-            _, _, w, h = d.textbbox((0, 0), word, font = fnt)
-            d.text(((pic_width-w)/2, (pic_height-h)/2), word, font=fnt, fill=255,
-                                        stroke_width = 10, stroke_fill = "white")
-            d.textlength(word, font=fnt)        
-        
-            # draw text, full opacity
-            out = Image.alpha_composite(base, txt)
-
-            # if you want to test, you can use out.show()
-            # out.show()
-            # Save the image
-            out = out.convert("RGB")
-            output_path = os.path.join(output_dir, f"{category_of_your_stimuli}-{idx}.jpeg")
-            out.save(output_path)
-            
-            if doCB:
-                top_image = Image.new('RGB', [w, h], (255, 255, 255))
-                draw = ImageDraw.Draw(top_image)
-                
-                # Set the colors
-                number_of_square_across = 10
-
-                # Set the colors
-                color_one = (0, 0, 0)
-                color_two = (0, 0, 255)
-
-                length_of_square = h/number_of_square_across
-                length_of_two_squares = h/number_of_square_across*2
-                pixels = top_image.load()  # create the pixel map
-
-                for i in range(h):
-                    # for every 100 pixels out of the total 500 
-                    # if its the first 50 pixels
-                    if (i % length_of_two_squares) >= length_of_square:
-                        for j in range(w):
-                            if (j % length_of_two_squares) < length_of_square:
-                                pixels[i,j] = color_one
-                            else:
-                                pixels[i,j] = color_two
-
-                    # else its the second 50 pixels         
-                    else:
-                        for j in range(w):
-                            if (j % length_of_two_squares) >= length_of_square:
-                                pixels[i,j] = color_one
-                            else:
-                                pixels[i,j] = color_two
-
-                top_image.show()
-                
-                
-                
-                
-                
-                
-                
-                
-            if doSC:    
-
-def get_ttf_fonts(fonts_directory):
-    """List all .ttf font files in the specified directory."""
-    font_paths = []
-    for file in os.listdir(fonts_directory):
-        if file.endswith('.ttf'):
-            font_paths.append(os.path.join(fonts_directory, file))
-    return font_paths
+    # Define the location of the checkerboard (randomly)
+    cheker_center_x=  canvas_width//2
+    cheker_center_y=  canvas_height//2
 
 
+    x0,y0=cheker_center_x-w//2, cheker_center_y-h//2
+    x1,y1=cheker_center_x+w//2, cheker_center_y+h//2
+
+    # Draw a random shape (in this case, a rectangle)
+    draw.rectangle([x0,y0, x1,y1], fill=0)
+
+    # Draw the checkerboard pattern inside the shape
+    square_size = 20
+    for row in range(y0,y1, square_size):
+        print(row)
+        for col in range(x0, x1, square_size):
+            if (row // square_size + col // square_size) % 2 == 0:
+                draw.rectangle([col, row, col + square_size, row + square_size], fill=255)
+            else:
+                 draw.rectangle([col, row, col + square_size, row + square_size], fill=0)
+
+    background.save(output_path)
+
+def create_word(background_path, output_path, word, fnt):
+    background = Image.open(background_path)
+
+    pic_width, pic_height = background.width, background.height
+
+    draw = ImageDraw.Draw(background)
+
+    # draw text, half opacity, center the image
+    _, _, w, h = draw.textbbox((0, 0), word, font=fnt)
+
+    draw.text(((pic_width - w) / 2, (pic_height - h) / 2), word, font=fnt, fill=255,
+              stroke_width=2, stroke_fill="white")
+
+    # draw text, full opacity
+    background.save(output_path)
+
+def create_scambled(background_path, output_path, word, fnt):
+    background= Image.open(background_path)
+    pic_width, pic_height = background.width, background.height
+    txt = Image.new("RGBA", background.size, (255, 255, 255, 0))
+
+    # get a drawing context
+    d = ImageDraw.Draw(txt)
+
+    # draw text, half opacity, center the image
+    _, _, w, h = d.textbbox((0, 0), word, font=fnt)
+    d.text(((pic_width - w) / 2, (pic_height - h) / 2), word, font=fnt, fill=(255,255,255),
+           stroke_width=2, stroke_fill="white")
+
+
+
+    # Calculate the number of tiles in each dimension
+    num_tiles_x = w // 10
+    num_tiles_y = h // 10
+    # crop the text box for scramble
+    txtbox = txt.crop(d.textbbox(((pic_width - w) / 2, (pic_height - h) / 2), word, font=fnt))
+    # Create a list to store the tiles
+    tiles = []
+
+    # Extract 10x10 pixel tiles from the image
+    for y in range(num_tiles_y):
+        for x in range(num_tiles_x):
+            left = x * 10
+            upper = y * 10
+            right = left + 10
+            lower = upper + 10
+            tile = txtbox.crop((left, upper, right, lower))
+            tiles.append(tile)
+
+    # Randomly shuffle the tiles
+    random.shuffle(tiles)
+
+    # Create a new image to reconstruct the scrambled image
+    scrambled_image = Image.new("RGBA", (w, h), (255, 255, 255, 0))
+
+    # Paste the shuffled tiles back into the image
+    for y in range(num_tiles_y):
+        for x in range(num_tiles_x):
+            index = y * num_tiles_x + x
+            left = x * 10
+            upper = y * 10
+            scrambled_image.paste(tiles[index], (left, upper))
+
+    background.paste(scrambled_image, ((pic_width - w) // 2, (pic_height - h) // 2), scrambled_image)
+
+    background.save(output_path)
+
+### Section below is for excuting
+###
 # FOLDERS
 homedir = os.getenv('HOME')
 word_dir = join(homedir,'toolboxes/votc-langorth/DATA/output')
@@ -118,7 +126,7 @@ fonts_directory = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
 font_size = 150
 doSC = True
 doCB = True
-
+fnt = ImageFont.truetype(fonts_directory, font_size)
 # These are the lists of words we need to generate, this comes from fLoc
 #         stim_set1 = {'body' 'JP_word1' 'adult' 'ff' 'cb'};
 #         stim_set2 = {'limb' 'JP_word2' 'child' 'cs' 'sc'};
@@ -138,15 +146,35 @@ categories_textfiles_dict = {
     # "DE_word2":'RW_DE_CB2_80_justwords.txt',
 }
 
-for category_of_your_stimuli in categories_textfiles_dict.keys(): 
+for category_of_your_stimuli in categories_textfiles_dict.keys():
     word_listn = open(
-        join(word_dir,categories_textfiles_dict[category_of_your_stimuli]),
+        join(word_dir, categories_textfiles_dict[category_of_your_stimuli]),
         'r').readlines()
     word_list = [w.strip('\n') for w in word_listn]
 
     output_dir = join(base_output_dir, category_of_your_stimuli)
     if not os.path.exists(output_dir): os.makedirs(output_dir)
 
-    create_word_images(category_of_your_stimuli, word_list, backgrounds_directory, 
-                       output_dir, fonts_directory, font_size, doSC, doCB)
+
+def main(backgrounds_directory, output_dir, word_list, category_of_your_stimuli, doWORD, doSC, doCB, fnt):
+    background_paths = get_image_files(backgrounds_directory)
+
+    for idx in range(len(word_list)):
+        # Select a random background
+        word = word_list[idx]
+        background_path = random.choice(background_paths)
+        output_path = os.path.join(output_dir, f"{category_of_your_stimuli}-{idx}.jpeg")
+
+        if doWORD:
+            create_word(background_path, output_path, word, fnt)
+            print(f"the image of word {word} and index {idx} created to {outputpath}")
+        if doSC:
+            output_path=
+            create_scambled(background_path, output_path, word, fnt)
+            print(f"the image of scrabled word {word} and index {idx} created to {outputpath}")
+        if doCB:
+            create_checkboard(background_path, output_path, word, fnt)
+            print(f"the image of checkboards based on length of {word} and index {idx} created to {outputpath}")
+
+
 
