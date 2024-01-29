@@ -1,0 +1,13 @@
+folders = { 'JP_CS1', 'JP_CS2', ...
+            'JP_SC1', 'JP_SC2', ...
+            'JP_word1', 'JP_word2', ...
+            'JP_CB1', 'JP_CB2', ...
+            'JP_FF1', 'JP_FF2'};
+imformat = 'jpg';
+for folder=folders
+   % [images,N] = readImages(input_folder, imformat);
+   SHINE(folder{:})
+end
+
+
+SHINE('JP_ALL')
