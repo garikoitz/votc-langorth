@@ -1,9 +1,14 @@
 import os
 import random
 from PIL import Image, ImageDraw, ImageFont
-
 join = os.path.join
 
+'''
+This script is used for generate the fLoc stimuli,
+it will create RW, SC, FF
+We also need use CS
+
+'''
 def get_image_files(directory):
     """List all image files in the votcloc/stimuli/scrambled."""
     supported_formats = ['.jpeg', '.jpg', '.png', '.bmp', '.gif']  # Add or remove formats as needed
@@ -165,7 +170,7 @@ def main(backgrounds_directory, base_output_dir, word_list, category_of_your_sti
 homedir = os.getenv('HOME')
 word_dir = join(homedir,'toolboxes/votc-langorth/DATA/output')
 backgrounds_directory = join(homedir,"toolboxes/fLoc/stimuli/scrambled")
-base_output_dir = join(homedir,"soft/SHINEtoolbox/SHINE_INPUT/")
+base_output_dir = join(homedir,"Desktop")
 fonts_directory = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
 
 # VARIABLES
@@ -182,14 +187,17 @@ languages = ['ES','EU','JP','ZH','DE']
 # https://translit.cc/ge/
 
 categories_textfiles_dict = {
-    # "ES_word1":'RW_ES_CB1_80_justwords.txt',
-    # "ES_word2":'RW_ES_CB2_80_justwords.txt',
-    "EU_word1":'RW_EU_CB1_80_justwords.txt',
-    "EU_word2":'RW_EU_CB2_80_justwords.txt',
-    "EU_CS1":'CS_EU_CB1_80_justwords.txt',
-    "EU_CS2":'CS_EU_CB2_80_justwords.txt',
-    "EU_FF1":'FF_EU_CB1_80_justwords.txt',
-    "EU_FF2":'FF_EU_CB2_80_justwords.txt',    
+     "ES_word1":'RW_ES_CB1_80_justwords.txt',
+     "ES_word2":'RW_ES_CB2_80_justwords.txt',
+     "ES_CS1":'CS_ES_CB1_80_csonly.txt',
+     "ES_CS2":'CS_ES_CB2_80_csonly.txt',
+    
+    #"EU_word1":'RW_EU_CB1_80_justwords.txt',
+    #"EU_word2":'RW_EU_CB2_80_justwords.txt',
+    #"EU_CS1":'CS_EU_CB1_80_justwords.txt',
+    #"EU_CS2":'CS_EU_CB2_80_justwords.txt',
+    #"EU_FF1":'FF_EU_CB1_80_justwords.txt',
+    #"EU_FF2":'FF_EU_CB2_80_justwords.txt',    
     # "JP_word1":'RW_JP_CB1_72_justwords.txt',
     # "JP_word2":'RW_JP_CB2_72_justwords.txt',
     # "JP_CS1":'CS_JP_CB1_134_justwords.txt',
