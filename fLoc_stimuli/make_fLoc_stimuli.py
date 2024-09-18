@@ -160,9 +160,6 @@ def main(backgrounds_directory, base_output_dir, word_list, category_of_your_sti
             # print(f"the image of checkboards based on length of {word} and index {idx} created to {output_path}")
 
 
-
-
-            
             
 ### Section below is for excuting
 ###
