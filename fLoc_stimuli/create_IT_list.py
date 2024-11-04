@@ -2,6 +2,17 @@ import nltk
 import pandas as pd
 import os
 import random
+'''
+The Italian corpus is from this source: https://www.corpusitaliano.it/en/contents/description.html
+
+It is the corpus that contains 220 million words from online material. 
+
+They provide: 
+1. the corpus
+2. the annotated corpus
+3. the occurrence counts for all the element
+4. the occurrence counts for the elements without numbers etc
+'''
 
 basedir='/Users/tiger/italian_stim/corpus'  
 IT_lemma_freq=pd.read_csv(os.path.join(basedir,'lemma-WITHOUTnumberssymbols-frequencies-paisa.txt'), sep=",", header=1, names=["lemma","occurrence"])
