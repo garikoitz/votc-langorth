@@ -57,18 +57,18 @@ def gen_output(rw_pw_tuple_list):
     return rw_pw_df,pw_df
 
 def main():
-    basedir='/Users/tiger/toolboxes/votc-langorth/fLoc_stimuli/Italian'
-    RWH_fname='IT_RWH.txt' 
-    RWL_fname='IT_RWL.txt'
+    basedir='/Users/tiger/toolboxes/votc-langorth/fLoc_stimuli/French'
+    RWH_fname='FR_RWH.txt' 
+    RWL_fname='FR_RWL.txt'
 
     df_RWH=pd.read_csv(os.path.join(basedir,RWH_fname))
     df_RWL=pd.read_csv(os.path.join(basedir,RWL_fname))
 
-    ref_rw_df, rw_pw_df, pw_df=gen_PW(df_RWH,df_RWL,"LEMMA",'italian')
+    ref_rw_df, rw_pw_df, pw_df=gen_PW(df_RWH,df_RWL,"lemme",'french')
     # then save both dataframe 
-    ref_df_fname=os.path.join(basedir,'IT_mixed_RWHL.txt')
-    rw_pw_list_fname=os.path.join(basedir,'IT_RW_PW_match.txt')
-    pw_txt_fname=os.path.join(basedir,'IT_PW.txt')
+    ref_df_fname=os.path.join(basedir,'FR_mixed_RWHL.txt')
+    rw_pw_list_fname=os.path.join(basedir,'FR_RW_PW_match.txt')
+    pw_txt_fname=os.path.join(basedir,'FR_PW.txt')
 
     ref_rw_df.to_csv(ref_df_fname,sep='\t', index=False)
     rw_pw_df.to_csv(rw_pw_list_fname, sep='\t',index=False)

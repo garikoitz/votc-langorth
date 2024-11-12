@@ -91,6 +91,12 @@ annoted_list=pd.merge(draft_IT_word_list, annotated_whole_list, on='LEMMA', how=
 annoted_list=annoted_list.filter(items=['LEMMA','freq','FORM','POSTAG','DEPREL']).reset_index(drop=True).drop_duplicates(keep='first',inplace=False)
 # Here we want to save it
 #annoted_list.to_csv(os.path.join(basedir,'IT_annoted_list_short.txt'))
+
+# content word and no-name
+drop_cap=annoted_list['LEMMA'].str.match(r'^[a-z]')
+maintain_content_word=(annoted_list['POSTAG']=='S')|(annoted_list['POSTAG']=='V')
+content_word_list=annoted_list[drop_cap & maintain_content_word]
+content_word_list.to_csv(os.path.join(basedir,'IT_contentword_annot.txt'))
 elapsed = time.time() - t
 print(f"Time to get the annoted and store the final one takes {elapsed}")
 
@@ -120,11 +126,12 @@ def is_italian(word):
 
 # Apply the function and filter the dataframe
 print ('start doing apply')
-lemma_freq_list=annoted_list.filter(items=['LEMMA','freq']).reset_index(drop=True).drop_duplicates(keep='first',inplace=False)
+lemma_freq_list=content_word_list.filter(items=['LEMMA','freq']).reset_index(drop=True).drop_duplicates(keep='first',inplace=False)
 lemma_freq_list.to_csv(os.path.join(basedir,'IT_RW_list_length_freq_filtered.txt'))
 is_italian = lemma_freq_list['LEMMA'].swifter.apply(is_italian)  # Mark Italian words
-filtered_final = annoted_list[is_italian]
+filtered_final = lemma_freq_list[is_italian]
 
+# in the meantime, 
 # store it first
 filtered_final.to_csv(os.path.join(basedir,'IT_RW_list_wuggy_filtered.txt'))
 
@@ -139,8 +146,34 @@ print(f"Time to get the wuggy preprocessed one takes: {elapsed}")
 
 
 high_frequency_list=filtered_final[filtered_final['freq'].apply(lambda x: x>1000)]
-low_frequency_list=filtered_final[filtered_final['freq'].apply(lambda x: x<39 and x>1)]
+low_frequency_list=filtered_final[filtered_final['freq'].apply(lambda x: x<50 and x>20)]
 
+high_frequency_list.to_csv(os.path.join(basedir,'IT_RWH_frq1000.txt'),index=False)
+low_frequency_list.to_csv(os.path.join(basedir,'IT_RWL_frq20-50.txt'),index=False)
+
+## Then we select it by hand, drop the common one in spanish and english
+
+IT_hi_reviewed=pd.read_csv('/Users/tiger/Desktop/IT_RWH_reviewed.txt', sep=',')
+IT_lo_reviewed=pd.read_csv('/Users/tiger/Desktop/IT_RWL_reviewed.txt', sep=',')
+# check if the reviewed list are all inside of the freq list
+IT_hi_reviewed.LEMMA.isin(high_frequency_list.LEMMA)
+## this one will fail because before we use 1-39, now we use 10-50, we lifted a little bit the treshold
+IT_lo_reviewed.LEMMA.isin(low_frequency_list.LEMMA)
+
+
+# drop the reviewed word from the final word list
+hi_frq_drop=high_frequency_list.LEMMA.isin(IT_hi_reviewed.LEMMA)
+final_high_freq=high_frequency_list[~hi_frq_drop]
+rand_high= random.sample(range(0,final_high_freq.shape[0]), 30)
+final_high_freq_list=final_high_freq.iloc[rand_high]
+final_high_freq_list.to_csv('/Users/tiger/Desktop/IT_40_extra_high.txt', index=False)
+
+lo_frq_drop=low_frequency_list.LEMMA.isin(IT_lo_reviewed.LEMMA)
+final_low_freq=low_frequency_list[~lo_frq_drop]
+# set here to 120 because we will drop a lot of the word that are both EN ES or FR
+rand_low= random.sample(range(0,final_low_freq.shape[0]), 120)
+final_low_freq_list=final_low_freq.iloc[rand_low]
+final_low_freq_list.to_csv('/Users/tiger/Desktop/IT_80_extra_low.txt', index=False)
 # random choose 100 from high frequency and low frequency list
 rand_high= random.sample(range(0,high_frequency_list.shape[0]), 100)
 final_high_freq_list=high_frequency_list.iloc[rand_high]
@@ -148,12 +181,3 @@ final_high_freq_list=high_frequency_list.iloc[rand_high]
 rand_low= random.sample(range(0,low_frequency_list.shape[0]), 100)
 final_low_freq_list=low_frequency_list.iloc[rand_low]
 
-
-final_high_freq_list.to_csv(os.path.join(basedir,'IT_RWH.txt'),index=False)
-final_low_freq_list.to_csv(os.path.join(basedir,'IT_RWL.txt'),index=False)
-
-# then choose 80 RWH and choose 80RWL to have the final RW list
-
-# then choose 50% of the high and 50% of the low to form the PW list
-
-# then choose 50% of the high and 50% of the low to form the CS list
