@@ -184,10 +184,10 @@ languages = ['ES','EU','JP','ZH','DE']
 # https://translit.cc/ge/
 
 categories_textfiles_dict = {
-     "ES_word1":'RW_ES_CB1_80_justwords.txt',
-     "ES_word2":'RW_ES_CB2_80_justwords.txt',
-     "ES_CS1":'CS_ES_CB1_80_csonly.txt',
-     "ES_CS2":'CS_ES_CB2_80_csonly.txt',
+     #"ES_word1":'RW_ES_CB1_80_justwords.txt',
+     #"ES_word2":'RW_ES_CB2_80_justwords.txt',
+     #"ES_CS1":'CS_ES_CB1_80_csonly.txt',
+     #"ES_CS2":'CS_ES_CB2_80_csonly.txt',
     
     #"EU_word1":'RW_EU_CB1_80_justwords.txt',
     #"EU_word2":'RW_EU_CB2_80_justwords.txt',
