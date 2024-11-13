@@ -1,0 +1,76 @@
+Spanish database is eapal, which is big than 75 MB, here is the share document link to download it,
+https://docs.google.com/spreadsheets/d/15XC7I-wWY784wCNXRoZAkGN4C0xZbl5v/edit?usp=sharing&ouid=109554283777008004842&rtpof=true&sd=true
+
+The English database is screened online through MRC Psycholinguistic Database.
+https://websites.psychology.uwa.edu.au/school/MRCDatabase/uwa_mrc.htm
+
+
+BASQUE
+H-MAIZT : UZEI word frequency (per million)
+N : number of orthographic neighbors 
+MBLB : summed log bigram token frequency 
+LUZ-L: length of input stimulus in letters
+
+frequency: 4-500
+length of letters: 4-6
+
+
+ENGLISH
+MCR:  KFFRQ(Kucera-Francis written frequency):  4-500 (per million)
+           NLET(number of letters): 4-6
+           CNC ( Concreteness rating ): 100-700 default range
+           
+Neighbour Watch: 
+            SLBF : summed log bigram token frequency 
+            N : number of orthographic neighbors 
+
+
+
+CHINESE
+Using Yanjuns list in excel
+
+
+
+SPANISH
+using the same list iI had from MINI, but now using it with SoS with other parameters
+
+#############
+##Tiger update
+#############
+
+German/AT
+
+corpus source?
+length?
+frequency?
+
+Italian 
+
+The Italian corpus is from this source: https://www.corpusitaliano.it/en/contents/description.html
+
+It is the corpus that contains 220 million words from online material. 
+
+They provide: 
+1. the corpus
+2. the annotated corpus
+3. the occurrence counts for all the element
+4. the occurrence counts for the elements without numbers etc
+'''
+
+length: 4-6
+freq: low frequency: 1-50
+high frequency: 1000
+
+French
+
+French stimuli is from Lexique
+http://www.lexique.org/
+
+length: 4-6
+freq: low frequency: 5-20
+high frequency: 2000
+
+JP
+
+source of corpus? 
+control of length and frequency?
