@@ -18,37 +18,38 @@ def get_image_files(directory):
             image_files.append(os.path.join(directory, file))
     return image_files
 
-def create_checkboard(background_path, output_path, word, fnt):
-    # Load the background image
-    background = Image.open(background_path)
+# We don't need CB for the new version.
+# def create_checkboard(background_path, output_path, word, fnt):
+#     # Load the background image
+#     background = Image.open(background_path)
 
-    draw = ImageDraw.Draw(background)
+#     draw = ImageDraw.Draw(background)
 
-    # draw text, half opacity, center the image
-    _, _, w, h = draw.textbbox((0, 0), word, font = fnt)
-    canvas_width, canvas_height= background.size
+#     # draw text, half opacity, center the image
+#     _, _, w, h = draw.textbbox((0, 0), word, font = fnt)
+#     canvas_width, canvas_height= background.size
 
-    # Define the location of the checkerboard (randomly)
-    cheker_center_x=  canvas_width//2
-    cheker_center_y=  canvas_height//2
+#     # Define the location of the checkerboard (randomly)
+#     cheker_center_x=  canvas_width//2
+#     cheker_center_y=  canvas_height//2
 
 
-    x0,y0=cheker_center_x-w//2, cheker_center_y-h//2
-    x1,y1=cheker_center_x+w//2, cheker_center_y+h//2
+#     x0,y0=cheker_center_x-w//2, cheker_center_y-h//2
+#     x1,y1=cheker_center_x+w//2, cheker_center_y+h//2
 
-    # Draw a random shape (in this case, a rectangle)
-    draw.rectangle([x0,y0, x1,y1], fill=0)
+#     # Draw a random shape (in this case, a rectangle)
+#     draw.rectangle([x0,y0, x1,y1], fill=0)
 
-    # Draw the checkerboard pattern inside the shape
-    square_size = 20
-    for row in range(y0,y1, square_size):
-        for col in range(x0, x1, square_size):
-            if (row // square_size + col // square_size) % 2 == 0:
-                draw.rectangle([col, row, col + square_size, row + square_size], fill=255)
-            else:
-                 draw.rectangle([col, row, col + square_size, row + square_size], fill=0)
+#     # Draw the checkerboard pattern inside the shape
+#     square_size = 20
+#     for row in range(y0,y1, square_size):
+#         for col in range(x0, x1, square_size):
+#             if (row // square_size + col // square_size) % 2 == 0:
+#                 draw.rectangle([col, row, col + square_size, row + square_size], fill=255)
+#             else:
+#                  draw.rectangle([col, row, col + square_size, row + square_size], fill=0)
 
-    background.save(output_path)
+#     background.save(output_path)
 
 def create_word(background_path, output_path, word, fnt):
     background = Image.open(background_path)
@@ -148,16 +149,16 @@ def main(backgrounds_directory, base_output_dir, word_list, category_of_your_sti
             create_scambled(background_path, output_path, word, fnt)
             # print(f"the image of scrabled word {word} and index {idx} created to {output_path}")
 
-        if doCB:
-            if one_folder:
-                output_dir = join(base_output_dir, 
-                                  f"{category_of_your_stimuli[0:2]}_ALL")
-            else:
-                output_dir = join(base_output_dir, category_of_your_stimuli.replace('word','CB'))
-            if not os.path.exists(output_dir): os.makedirs(output_dir)
-            output_path = os.path.join(output_dir, f"{category_of_your_stimuli.replace('word','CB')}-{idx+1}.jpg")
-            create_checkboard(background_path, output_path, word, fnt)
-            # print(f"the image of checkboards based on length of {word} and index {idx} created to {output_path}")
+        # if doCB:
+        #     if one_folder:
+        #         output_dir = join(base_output_dir, 
+        #                           f"{category_of_your_stimuli[0:2]}_ALL")
+        #     else:
+        #         output_dir = join(base_output_dir, category_of_your_stimuli.replace('word','CB'))
+        #     if not os.path.exists(output_dir): os.makedirs(output_dir)
+        #     output_path = os.path.join(output_dir, f"{category_of_your_stimuli.replace('word','CB')}-{idx+1}.jpg")
+        #     create_checkboard(background_path, output_path, word, fnt)
+        #     # print(f"the image of checkboards based on length of {word} and index {idx} created to {output_path}")
 
 
             
@@ -165,10 +166,13 @@ def main(backgrounds_directory, base_output_dir, word_list, category_of_your_sti
 ###
 # FOLDERS
 homedir = os.getenv('HOME')
-word_dir = join(homedir,'toolboxes/votc-langorth/DATA/output')
-backgrounds_directory = join(homedir,"toolboxes/fLoc/stimuli/scrambled")
+# if in linux, need to add one tlei
+
+backgrounds_directory = join(homedir,"tlei/toolboxes/fLoc/stimuli/scrambled")
 base_output_dir = join(homedir,"Desktop")
-fonts_directory = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
+# for Ubuntu is "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf"
+# for mac is "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
+fonts_directory = "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf"
 
 # VARIABLES
 font_size = 150
@@ -178,12 +182,18 @@ fnt = ImageFont.truetype(fonts_directory, font_size)
 #         stim_set1 = {'body' 'JP_word1' 'adult' 'ff' 'cb'};
 #         stim_set2 = {'limb' 'JP_word2' 'child' 'cs' 'sc'};
 
-languages = ['ES','EU','JP','ZH','DE']
 
+languages = ['ES','EU','AT','IT','FR']
 # Web page to translate to Georgian, just copy and paste lists
 # https://translit.cc/ge/
+# put here the name of the word list to be converted
+word_dir = join(homedir,'tlei/toolboxes/votc-langorth/DATA/wordlist_for_VOTCLOC') 
+langs=['AT','EN','ES','EU','FR','IT']
+cats=['RW','CS','FF']
 
-categories_textfiles_dict = {
+categories_textfiles_dict = {f"{code}_{cat}": f"{code}_{cat}_80.txt" for code in langs for cat in cats}
+
+#categories_textfiles_dict = {
      #"ES_word1":'RW_ES_CB1_80_justwords.txt',
      #"ES_word2":'RW_ES_CB2_80_justwords.txt',
      #"ES_CS1":'CS_ES_CB1_80_csonly.txt',
@@ -204,7 +214,7 @@ categories_textfiles_dict = {
     # "ZH_word2":'RW_ZH_CB2_80_justwords.txt',
     # "DE_word1":'RW_DE_CB1_80_justwords.txt',
     # "DE_word2":'RW_DE_CB2_80_justwords.txt',
-}
+#}
 
 for category_of_your_stimuli in categories_textfiles_dict.keys():
     word_listn = open(

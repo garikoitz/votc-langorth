@@ -79,7 +79,6 @@ carica,1286
 volo,1069
 opera,6916
 nuovo,13857
-quando,10874
 occhio,1627
 destra,1071
 nostro,3965
@@ -100,4 +99,4 @@ finale,2821
 vicino,2699
 causa,4019
 male,1124
-coppia,1394 
+coppia,1394

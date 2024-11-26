@@ -1,0 +1,3 @@
+JP data was generated through chat GPT
+
+The mapping of FF are from a matlab code. need to convert it to python
