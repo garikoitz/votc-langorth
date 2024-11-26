@@ -139,13 +139,15 @@ def main(backgrounds_directory, base_output_dir, word_list, category_of_your_sti
             # print(f"the image of word {word} and index {idx} created to {output_path}")
             
         if doSC:
+            
             if one_folder:
                 output_dir = join(base_output_dir, 
                                   f"{category_of_your_stimuli[0:2]}_ALL")
             else:            
-                output_dir = join(base_output_dir, category_of_your_stimuli.replace('word','SC'))
-            if not os.path.exists(output_dir): os.makedirs(output_dir)
-            output_path = os.path.join(output_dir, f"{category_of_your_stimuli.replace('word','SC')}-{idx+1}.jpg")
+                output_dir = join(base_output_dir, category_of_your_stimuli.replace('RW','SC'))
+            if not os.path.exists(output_dir): 
+                os.makedirs(output_dir)
+            output_path = os.path.join(output_dir, f"{category_of_your_stimuli.replace('RW','SC')}-{idx+1}.jpg")
             create_scambled(background_path, output_path, word, fnt)
             # print(f"the image of scrabled word {word} and index {idx} created to {output_path}")
 
@@ -167,12 +169,11 @@ def main(backgrounds_directory, base_output_dir, word_list, category_of_your_sti
 # FOLDERS
 homedir = os.getenv('HOME')
 # if in linux, need to add one tlei
-
-backgrounds_directory = join(homedir,"tlei/toolboxes/fLoc/stimuli/scrambled")
+backgrounds_directory = join(homedir, "toolboxes/fLoc/stimuli/scrambled")
 base_output_dir = join(homedir,"Desktop")
 # for Ubuntu is "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf"
 # for mac is "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
-fonts_directory = "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf"
+fonts_directory = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
 
 # VARIABLES
 font_size = 150
@@ -181,13 +182,10 @@ fnt = ImageFont.truetype(fonts_directory, font_size)
 # These are the lists of words we need to generate, this comes from fLoc
 #         stim_set1 = {'body' 'JP_word1' 'adult' 'ff' 'cb'};
 #         stim_set2 = {'limb' 'JP_word2' 'child' 'cs' 'sc'};
-
-
-languages = ['ES','EU','AT','IT','FR']
 # Web page to translate to Georgian, just copy and paste lists
 # https://translit.cc/ge/
 # put here the name of the word list to be converted
-word_dir = join(homedir,'tlei/toolboxes/votc-langorth/DATA/wordlist_for_VOTCLOC') 
+word_dir = join(homedir,'toolboxes/votc-langorth/DATA/wordlist_for_VOTCLOC') 
 langs=['AT','EN','ES','EU','FR','IT']
 cats=['RW','CS','FF']
 
@@ -222,9 +220,13 @@ for category_of_your_stimuli in categories_textfiles_dict.keys():
         'r').readlines()
     word_list = [w.strip('\n') for w in word_listn]
   
-    if 'word' in category_of_your_stimuli:
+    if 'RW' in category_of_your_stimuli:
+        print('Doing RW')
         main(backgrounds_directory, base_output_dir, word_list, category_of_your_stimuli, 
-             True, True, True, fnt, False)
+             True, True, False, fnt, False)
     else:
         main(backgrounds_directory, base_output_dir, word_list, category_of_your_stimuli, 
              True, False, False, fnt, False)
+        
+
+#doWORD, doSC, doCB,
