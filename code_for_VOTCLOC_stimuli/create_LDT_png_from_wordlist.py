@@ -37,12 +37,12 @@ def main(rw_list,base_output_dir, word_list, category_of_your_stimuli, fnt, one_
         rw = rw_list[idx]
         if one_folder:
             output_dir = join(base_output_dir, 
-                                f"{category_of_your_stimuli[0:2]}_ALL")
+                                f"{category_of_your_stimuli[0:2]}")
         else:
             output_dir = join(base_output_dir, category_of_your_stimuli)
         if not os.path.exists(output_dir): 
             os.makedirs(output_dir)
-        output_path = os.path.join(output_dir, f"{category_of_your_stimuli}_{rw}.png")
+        output_path = os.path.join(output_dir, f"{category_of_your_stimuli}_{idx+1}.png")
         create_word(output_path, word, fnt)
         # print(f"the image of word {word} and index {idx} created to {output_path}")
             
@@ -53,7 +53,7 @@ def main(rw_list,base_output_dir, word_list, category_of_your_stimuli, fnt, one_
 # FOLDERS
 homedir = os.getenv('HOME')
 # if in linux, need to add one tlei
-base_output_dir = join(homedir,"Desktop")
+base_output_dir = join(homedir,"soft",'Behav_LDT')
 # for Ubuntu is "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf"
 # for mac is "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
 fonts_directory = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
