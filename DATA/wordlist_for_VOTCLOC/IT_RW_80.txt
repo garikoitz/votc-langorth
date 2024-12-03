@@ -47,7 +47,7 @@ eremo
 tuffo
 siepe
 covata
-croati
+croato
 pizzo
 avaria
 cloro
@@ -55,7 +55,7 @@ pesco
 danaro
 sugo
 gancio
-figli
+figlio
 velcro
 cumulo
 maga
