@@ -61,7 +61,7 @@ fonts_directory = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
 font_size = 100
 fnt = ImageFont.truetype(fonts_directory, font_size)
 word_dir = join(homedir,'toolboxes/votc-langorth/DATA/wordlist_for_VOTCLOC') 
-langs=['AT','EN','ES','EU','FR','IT']
+langs=['IT']
 cats=['RW','CS','PW']
 
 categories_textfiles_dict = {f"{code}_{cat}": f"{code}_{cat}_80.txt" for code in langs for cat in cats}
