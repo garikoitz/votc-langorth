@@ -29,12 +29,11 @@ def create_word(output_path, word, fnt):
     # image.show()
     image.save(output_path)
 
-def main(rw_list,base_output_dir, word_list, category_of_your_stimuli, fnt, one_folder):
+def main(base_output_dir, word_list, category_of_your_stimuli, fnt, one_folder):
 
     for idx in range(len(word_list)):
         # Select a random background
         word = word_list[idx]
-        rw = rw_list[idx]
         if one_folder:
             output_dir = join(base_output_dir, 
                                 f"{category_of_your_stimuli[0:2]}")
@@ -62,7 +61,7 @@ font_size = 100
 fnt = ImageFont.truetype(fonts_directory, font_size)
 word_dir = join(homedir,'toolboxes/votc-langorth/DATA/wordlist_for_VOTCLOC') 
 langs=['IT']
-cats=['RW','CS','PW']
+cats=['PW']
 
 categories_textfiles_dict = {f"{code}_{cat}": f"{code}_{cat}_80.txt" for code in langs for cat in cats}
 
@@ -72,13 +71,9 @@ for category_of_your_stimuli in categories_textfiles_dict.keys():
         'r').readlines()
     word_list = [w.strip('\n') for w in word_listn]
     
-    rw_listn  =  open(
-        join(word_dir, categories_textfiles_dict[f'{category_of_your_stimuli.split('_')[0]}_RW']),
-        'r').readlines()
-    rw_list = [w.strip('\n') for w in rw_listn]
 
 
-    main(rw_list, base_output_dir, word_list, category_of_your_stimuli,fnt, True)
+    main(base_output_dir, word_list, category_of_your_stimuli,fnt, True)
 
 
         
