@@ -59,16 +59,3 @@ def get_CN_character(image_path, outputcolor='black' ):
         result_image = Image.fromarray(data)
 
     return result_image
-
-
-
-
-def make_CN_stim (result_image, I ):
-    return
-
-def visual_degree_and_stim_size(visual_degree, projector_measurement, background_size ):
-    stimulus_size=0
-    return stimulus_size
-
-
-result_image= 
