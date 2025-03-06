@@ -211,18 +211,18 @@ def crop_word(img_path:Path, output_dir:Path, reference:str, force:bool ):
 
     # return the size of the cropped image
     return x,y
-src_dir=Path('/home/tlei/Desktop')
-images=[f'IT_word{i+1}_letsize25.png' for i in range(4)]
-output_dir=Path(src_dir) / "crop_ret_ref"
+# src_dir=Path('/home/tlei/Desktop')
+# images=[f'IT_word{i+1}_letsize25.png' for i in range(4)]
+# output_dir=Path(src_dir) / "crop_ret_ref"
 
-size=[]
-for image in images:
-    img_path=Path(src_dir) / image
-    reference='ret'
-    force=True
-    x,y=crop_word(img_path, output_dir, reference, force)
-    #size is the x y for letsize 25
-    size.append((x,y))
+# size=[]
+# for image in images:
+#     img_path=Path(src_dir) / image
+#     reference='ret'
+#     force=True
+#     x,y=crop_word(img_path, output_dir, reference, force)
+#     #size is the x y for letsize 25
+#     size.append((x,y))
 
 # need to find a way to calculate the ratio of the Chinese word
 
@@ -503,8 +503,8 @@ def create_1024x1024_paragraph(
 def preproc():
     # get all the images:
     homedir = Path(os.getenv('HOME'))
-    word_dir = homedir / 'glerma/toolboxes/votc-langorth/DATA/CN_material'
-    types=['RW','FF']
+    word_dir = homedir / 'toolboxes/votc-langorth/DATA/CN_material'
+    types=['PW','CS'] #['RW','FF']
     output_dir=word_dir / 'derivatives'
 
     # crop everything
@@ -601,7 +601,7 @@ def preproc():
 
 
 
-def create_CN_fig_overlay(background_path, figure_path, output_path):ChildProcessError
+def create_CN_fig_overlay(background_path, figure_path, output_path):
     background = Image.open(background_path)
     figure = Image.open(figure_path).convert("RGBA") 
     pic_width, pic_height = background.width, background.height
