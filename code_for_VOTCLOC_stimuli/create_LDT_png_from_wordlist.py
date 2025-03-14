@@ -52,18 +52,18 @@ def main(base_output_dir, word_list, category_of_your_stimuli, fnt, one_folder):
 # FOLDERS
 homedir = os.getenv('HOME')
 # if in linux, need to add one tlei
-base_output_dir = join(homedir,"soft",'Behav_LDT')
+base_output_dir =join(homedir,'Desktop') # join(homedir,"soft",'Behav_LDT')
 # for Ubuntu is "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf"
 # for mac is "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
 fonts_directory = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
 # VARIABLES
 font_size = 100
 fnt = ImageFont.truetype(fonts_directory, font_size)
-word_dir = join(homedir,'toolboxes/votc-langorth/DATA/wordlist_for_VOTCLOC') 
-langs=['IT']
-cats=['PW']
-
-categories_textfiles_dict = {f"{code}_{cat}": f"{code}_{cat}_80.txt" for code in langs for cat in cats}
+langs=['ES'] #['AT','EN','ES','EU','FR','IT']
+cats=['RW','CS','PW']
+CB_group=2
+word_dir = join(homedir,f'toolboxes/votc-langorth/DATA/wordlist_for_VOTCLOC/wordlist_CB{CB_group}') 
+categories_textfiles_dict = {f"{code}_{cat}{CB_group}": f"{code}_{cat}_80_CB{CB_group}.txt" for code in langs for cat in cats }
 
 for category_of_your_stimuli in categories_textfiles_dict.keys():
     word_listn = open(

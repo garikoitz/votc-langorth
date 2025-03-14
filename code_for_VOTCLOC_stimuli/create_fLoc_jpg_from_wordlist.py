@@ -170,7 +170,7 @@ def main(backgrounds_directory, base_output_dir, word_list, category_of_your_sti
 homedir = os.getenv('HOME')
 # if in linux, need to add one tlei
 backgrounds_directory = join(homedir, "toolboxes/fLoc/stimuli/scrambled")
-base_output_dir = join(homedir,"Desktop")
+base_output_dir = join(homedir, "toolboxes/fLoc/stimuli")
 # for Ubuntu is "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf"
 # for mac is "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
 fonts_directory = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
@@ -185,11 +185,12 @@ fnt = ImageFont.truetype(fonts_directory, font_size)
 # Web page to translate to Georgian, just copy and paste lists
 # https://translit.cc/ge/
 # put here the name of the word list to be converted
-word_dir = join(homedir,'toolboxes/votc-langorth/DATA/wordlist_for_VOTCLOC') 
-langs=['AT','EN','ES','EU','FR','IT']
-cats=['RW','CS','FF']
 
-categories_textfiles_dict = {f"{code}_{cat}": f"{code}_{cat}_80.txt" for code in langs for cat in cats}
+langs=['AT'] #['AT','EN','ES','EU','FR','IT']
+cats=['RW','CS','FF']
+CB_group=2
+word_dir = join(homedir,f'toolboxes/votc-langorth/DATA/wordlist_for_VOTCLOC/wordlist_CB{CB_group}') 
+categories_textfiles_dict = {f"{code}_{cat}{CB_group}": f"{code}_{cat}_80_CB{CB_group}.txt" for code in langs for cat in cats }
 
 #categories_textfiles_dict = {
      #"ES_word1":'RW_ES_CB1_80_justwords.txt',
@@ -219,14 +220,15 @@ for category_of_your_stimuli in categories_textfiles_dict.keys():
         join(word_dir, categories_textfiles_dict[category_of_your_stimuli]),
         'r').readlines()
     word_list = [w.strip('\n') for w in word_listn]
-  
+    
+    print(category_of_your_stimuli)
     if 'RW' in category_of_your_stimuli:
         print('Doing RW')
         main(backgrounds_directory, base_output_dir, word_list, category_of_your_stimuli, 
              True, True, False, fnt, False)
     else:
         main(backgrounds_directory, base_output_dir, word_list, category_of_your_stimuli, 
-             True, False, False, fnt, False)
+             True, True, False, fnt, False)
         
 
-#doWORD, doSC, doCB,
+#doWORD, doSC, doCB

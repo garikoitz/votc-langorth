@@ -1,18 +1,23 @@
 import os
 import random
-from PIL import Image, ImageDraw, ImageFont
 
 join = os.path.join
 
 # FOLDERS
 homedir = os.getenv('HOME')
 # for the linux machine, add tlei before toolbox
-word_dir = join(homedir,'tlei','toolboxes/votc-langorth/DATA/wordlist_for_VOTCLOC')
-backgrounds_directory = join(homedir,'tlei',"soft/fLoc/stimuli/scrambled")
+CB_group='CB2'
 
-lang=['AT','EN','ES','EU','FR','IT']
+# at tiger's mac, it will be as follow
+word_dir = join(homedir,f'toolboxes/votc-langorth/DATA/wordlist_for_VOTCLOC/wordlist_{CB_group}')
 
-input_output_file = {f"{code}_RW_80.txt": f"{code}_CS_80.txt" for code in lang}
+# at tiger's msi or bcbl, it will be as follow
+#word_dir = join(homedir, 'tlei', f'toolboxes/votc-langorth/DATA/wordlist_{CB_group}')
+
+
+#lang=['AT','EN','ES','EU','FR','IT']
+lang=['AT'] 
+input_output_file = {f"{code}_RW_80_{CB_group}.txt": f"{code}_CS_80_{CB_group}.txt" for code in lang}
 
 for ip in input_output_file.keys():
     ip_word_listn = open(join(word_dir, ip),'r').readlines()

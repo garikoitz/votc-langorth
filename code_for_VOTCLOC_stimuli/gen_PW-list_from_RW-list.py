@@ -39,36 +39,44 @@ def gen_PW(df_RWH, df_RWL, df_word_col_name ,lang):
 
 def gen_AT_PW(AT_RW_path):
     '''
-    code for generating PW list from word
+    Code for generating PW list from words.
 
-    need to input RWH list and RWL list
-
-    It will take half of the RWH and half of the RWL to form the final PW
-    
-    lang: valid options: english, italian, french, german
+    It takes words from the input file and generates pseudowords.
     '''
     g = WuggyGenerator()
-    g.load(f"orthographic_german")
-    word_list=pd.read_csv(AT_RW_path, header=None).iloc[:,0].tolist()
-    rw_pw_pair_lst=[]
-    t=time.time()
+    
+    try:
+        g.load("orthographic_german")
+    except Exception as e:
+        print(f"Failed to load Wuggy model: {e}")
+        return None
+
+    word_list = pd.read_csv(AT_RW_path, header=None).iloc[:, 0].tolist()
+    rw_pw_pair_lst = []
+    
+    t = time.time()
     for word in word_list:
-        try:    
-            pw_lst=[]
-            for match in g.generate_classic([word]):
-                pw_lst.append(match["pseudoword"])
-            num_ps=len(pw_lst)
-            rand_idx= random.sample(range(0,num_ps),1)
-            ps_word= pw_lst[rand_idx[0]]
-            rw_pw_pair_lst.append((match['word'],ps_word))
-        except Exception:
-            print(f"One {word} in the MIXED list is wrong, but we excluded it into the final list")
+        try:
+            pw_lst = [match["pseudoword"] for match in g.generate_classic([word])]
+            
+            if not pw_lst:
+                print(f"No pseudowords generated for {word}, skipping...")
+                continue
+            
+            ps_word = random.choice(pw_lst)  # Avoids using random.sample for a single item
+            rw_pw_pair_lst.append((word, ps_word))  # Using word instead of match['word']
+        
+        except KeyError as e:
+            print(f"KeyError for word {word}: {e}")
+        except ValueError as e:
+            print(f"Random sampling failed for {word}: {e}")
+        except Exception as e:
+            print(f"Unexpected error for word {word}: {e}")
         
     elapsed = time.time() - t
-    print(f'Time take to get the PW df is {elapsed}')   
-    rw_pw_df,pw_df=gen_output(rw_pw_pair_lst)
-
-    return rw_pw_df, pw_df
+    print(f'Time taken to get the PW df is {elapsed}')
+    
+    return gen_output(rw_pw_pair_lst)
 def gen_rand_word_list(df_RWH, df_RWL, word_col_name):
     
     # randomize gen index of 50 RWH and 50 RHL
@@ -142,14 +150,14 @@ def main():
     df_rw_pw['PW'].to_csv(os.path.join(basedir,'FR_PW.txt'), index=False, sep='\t')
     '''
 def main_AT():
-    basedir='/media/tlei/data/toolboxes/votc-langorth/DATA/AT_material'
-    AT_df_path= join(basedir,'AT_RW_80.txt')
+    basedir='/Users/tiger/toolboxes/votc-langorth/DATA/AT_material'
+    AT_df_path= os.path.join(basedir,'AT_RW_80_CB2.txt')
 
     rw_pw_df, pw_df=gen_AT_PW(AT_df_path)
     
     # then save both dataframe 
-    rw_pw_list_fname=os.path.join(basedir,'AT_RW_PW_match.txt')
-    pw_txt_fname=os.path.join(basedir,'AT_PW.txt')
+    rw_pw_list_fname=os.path.join(basedir,'AT_RW_PW_match_CB2.txt')
+    pw_txt_fname=os.path.join(basedir,'AT_PW_80_CB2.txt')
 
     rw_pw_df.to_csv(rw_pw_list_fname, sep='\t',index=False)
     pw_df.to_csv(pw_txt_fname,sep='\t', index=False)
@@ -171,5 +179,5 @@ def create_PW_from_old():
         df_PW.to_csv(out_path, header=None, index=False)
 if __name__ =='__main__':
     #main()
-    #main_AT()
-    create_PW_from_old()
+    main_AT()
+    #create_PW_from_old()
