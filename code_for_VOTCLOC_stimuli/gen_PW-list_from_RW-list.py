@@ -77,6 +77,7 @@ def gen_AT_PW(AT_RW_path):
     print(f'Time taken to get the PW df is {elapsed}')
     
     return gen_output(rw_pw_pair_lst)
+
 def gen_rand_word_list(df_RWH, df_RWL, word_col_name):
     
     # randomize gen index of 50 RWH and 50 RHL

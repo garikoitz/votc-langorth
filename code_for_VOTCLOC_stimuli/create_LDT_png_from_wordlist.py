@@ -59,7 +59,7 @@ fonts_directory = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
 # VARIABLES
 font_size = 100
 fnt = ImageFont.truetype(fonts_directory, font_size)
-langs=['ES'] #['AT','EN','ES','EU','FR','IT']
+langs=['AT'] #['AT','EN','ES','EU','FR','IT']
 cats=['RW','CS','PW']
 CB_group=2
 word_dir = join(homedir,f'toolboxes/votc-langorth/DATA/wordlist_for_VOTCLOC/wordlist_CB{CB_group}') 
