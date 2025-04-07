@@ -23,84 +23,54 @@ This script is used for generate the fLoc stimuli
 
 
 '''
-
-
-
 def images_to_mat_uint8_4d(
     input_dir: Path, 
     output_mat: Path,
     force: bool = False
 ):
     """
-    Loads exactly 100 PNG images of shape 1024x1024 (RGB), stacks them into an array of shape
-    (100, 1024, 1024, 3), then transposes that array to (1024, 1024, 3, 100) and saves it 
-    to a .mat file with dtype=uint8.
+    Loads 100 PNG RGB images of shape 1024x1024, stacks into a 4D uint8 array 
+    (1024, 1024, 3, 100), and saves it inside a 1x1 struct with field 'images' 
+    that contains a 1x1 cell array holding the 4D array.
 
-    Args:
-        input_dir (Path): Directory containing the 100 .png images, each 1024x1024 (RGB).
-        output_mat (Path): Destination for the .mat file.
-        force (bool): If False, raise error if 'output_mat' exists; if True, overwrite.
+    Result in MATLAB:
+        struct with fields:
+            images: {[1024×1024×3×100 uint8]}
     """
-
-    # 1) Check if output file exists
+    
     if output_mat.exists() and not force:
         raise FileExistsError(
             f"'{output_mat}' already exists. Use force=True to overwrite."
         )
     
-    # Ensure parent directories for output exist
     output_mat.parent.mkdir(parents=True, exist_ok=True)
 
-    # 2) Gather PNG files from input_dir
     img_paths = sorted(input_dir.glob("*.png"))
-    if len(img_paths) == 0:
-        raise ValueError(f"No PNG images found in '{input_dir}'.")
-    print(f"Found {len(img_paths)} PNG images in '{input_dir}'.")
-
-    # (Optional) Check if we have exactly 100 images
     if len(img_paths) != 100:
         raise ValueError(f"Expected exactly 100 images, but found {len(img_paths)}.")
 
-    # 3) Load the first image to determine reference shape
-    first_img = Image.open(img_paths[0]).convert("RGB")
-    arr_first = np.array(first_img, dtype=np.uint8)  # ensure uint8
-    # Expected shape: (1024, 1024, 3)
-
-    # Check if it's 1024x1024
-    if arr_first.shape[:2] != (1024, 1024) or arr_first.shape[2] != 3:
-        raise ValueError(f"First image is {arr_first.shape}, expected (1024, 1024, 3).")
-
-    num_images = len(img_paths)  # should be 100
-
-    # Prepare a stacked array (N, H, W, C) = (100, 1024, 1024, 3)
-    stacked = np.zeros((num_images, 1024, 1024, 3), dtype=np.uint8)
-
-    # Place the first image
-    stacked[0] = arr_first
-
-    # 4) Load the remaining images
-    for i, path in enumerate(img_paths[1:], start=1):
+    stacked = np.zeros((100, 1024, 1024, 3), dtype=np.uint8)
+    for i, path in enumerate(img_paths):
         img = Image.open(path).convert("RGB")
         arr = np.array(img, dtype=np.uint8)
         if arr.shape != (1024, 1024, 3):
             raise ValueError(
-                f"Image '{path.name}' has shape {arr.shape}, but "
-                "expected (1024, 1024, 3)."
+                f"Image '{path.name}' has shape {arr.shape}, expected (1024, 1024, 3)."
             )
         stacked[i] = arr
 
-    print(f"Stacked array shape (N,H,W,C): {stacked.shape}")
-
-    # 5) Transpose -> (H,W,C,N) => (1024,1024,3,100)
+    # Transpose to (1024, 1024, 3, 100)
     stacked_4d = np.transpose(stacked, (1, 2, 3, 0))
-    print(f"Transposed array shape: {stacked_4d.shape}")
 
-    # 6) Save to .mat file with 'images' as the variable name
-    mdict = {"images": stacked_4d}
-    savemat(output_mat, mdict)
-    print(f"Saved .mat file with shape {stacked_4d.shape} to: '{output_mat}'")
+    # Create a 1x1 cell array containing the 4D array
+    cell_array = np.empty((1, 1), dtype=object)
+    cell_array[0, 0] = stacked_4d
 
+    # Create a struct with one field 'images', containing that cell
+    struct = {'images': cell_array}
 
+    savemat(output_mat, struct)
+    print(f"Saved .mat file with struct->cell->4D array to '{output_mat}'")
 
 def get_image_files(directory):
     """List all image files in the votcloc/stimuli/scrambled."""
@@ -504,7 +474,7 @@ def preproc():
     # get all the images:
     homedir = Path(os.getenv('HOME'))
     word_dir = homedir / 'toolboxes/votc-langorth/DATA/CN_material'
-    types=['PW','CS'] #['RW','FF']
+    types=['RW','FF'] #['RW','FF']
     output_dir=word_dir / 'derivatives'
 
     # crop everything
@@ -680,9 +650,61 @@ def main ():
 ###
 # FOLDERS
 homedir = os.getenv('HOME')
-word_dir = join(homedir,'glerma/toolboxes/votc-langorth/DATA/CN_stim')
-backgrounds_directory = join(homedir,"glerma/toolboxes/fLoc/stimuli/scrambled")
+word_dir = join(homedir,'toolboxes/votc-langorth/DATA/CN_stim')
+backgrounds_directory = join(homedir,"toolboxes/fLoc/stimuli/scrambled")
 base_output_dir = join(homedir,"Desktop")
 
 
 
+def resize_to_make_50_100():
+    # get all the images:
+    homedir = Path(os.getenv('HOME'))
+    word_dir = homedir / 'toolboxes/votc-langorth/DATA/CN_material'
+    types=['RW','FF'] #['RW','FF']
+    output_dir=word_dir / 'derivatives'
+
+    for type in types:
+        ret_CN_list=get_image_files(output_dir /'ret'/f'CN_{type}')
+        img_path=[Path(i) for i in ret_CN_list]
+        letsize=100
+        ratio=0.9
+        output_letsize25_dir= output_dir / 'ret' /f'CN_{type}_letsize-{letsize}_ratio-{ratio}'
+        
+        force=True
+        for img in img_path:
+            resize_image_by_ratio(
+                img,
+                output_letsize25_dir,
+                letsize,
+                ratio,
+                force
+            )
+
+    # now create 100 random images with size 1024x1024
+    for type in types:
+        word_img_dir=output_dir / 'ret' /f'CN_{type}_letsize-{letsize}_ratio-{ratio}'
+
+        output_1024_dir= output_dir/'ret'/ f'CN_{type}_1024x1024_letsize-{letsize}_PNGs'
+        for i in range(100):
+            output_filename= output_1024_dir /  f'CN_{type}_1024x1024_{i+1}_letsize-{letsize}.png'
+            create_1024x1024_paragraph(
+                    word_img_dir,
+                    output_filename,
+                    force,
+                    canvas_size=(1024, 1024),
+                    padding=20,
+                    horizontal_spacing=15,
+                    vertical_spacing=25
+                )
+    ##########################################
+    ##########################################
+    # store things into a mat
+    for type in types:
+        input_dir= output_dir/'ret'/ f'CN_{type}_1024x1024_letsize-{letsize}_PNGs'
+        output_mat=output_dir/'ret'/f'CN_{type}_1024x1024x100_letsize-{letsize}.mat'
+        convert_mode = "RGB"
+        images_to_mat_uint8_4d(
+                input_dir, 
+                output_mat,
+                force
+            )
