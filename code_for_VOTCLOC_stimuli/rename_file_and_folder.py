@@ -76,10 +76,10 @@ def seperate_160_to_80(basedir, src_dir_name):
 
 homedir = os.getenv('HOME')
 # if in linux, need to add one tlei
-base_dir = os.path.join(homedir, "toolboxes/fLoc/stimuli")
+base_dir = os.path.join(homedir, "Desktop")
 
 langs=['CN'] #['AT','EN','ES','EU','FR','IT']
-cats=['RW','CS','FF','SC']
+cats=['RW','CS','FF']
 folder_160 = [f"{code}_{cat}" for code in langs for cat in cats ]
 
 for dir_name in folder_160:
