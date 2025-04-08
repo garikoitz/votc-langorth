@@ -55,14 +55,14 @@ homedir = os.getenv('HOME')
 base_output_dir =join(homedir,'Desktop') # join(homedir,"soft",'Behav_LDT')
 # for Ubuntu is "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf"
 # for mac is "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
-fonts_directory = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
+fonts_directory = "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf"
 # VARIABLES
 font_size = 100
 fnt = ImageFont.truetype(fonts_directory, font_size)
-langs=['AT'] #['AT','EN','ES','EU','FR','IT']
+langs=['FR'] #['AT','EN','ES','EU','FR','IT']
 cats=['RW','CS','PW']
 CB_group=2
-word_dir = join(homedir,f'toolboxes/votc-langorth/DATA/wordlist_for_VOTCLOC/wordlist_CB{CB_group}') 
+word_dir = join(homedir,f'tlei/toolboxes/votc-langorth/DATA/wordlist_for_VOTCLOC/wordlist_CB{CB_group}') 
 categories_textfiles_dict = {f"{code}_{cat}{CB_group}": f"{code}_{cat}_80_CB{CB_group}.txt" for code in langs for cat in cats }
 
 for category_of_your_stimuli in categories_textfiles_dict.keys():

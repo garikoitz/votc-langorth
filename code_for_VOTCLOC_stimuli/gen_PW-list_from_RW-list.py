@@ -81,8 +81,8 @@ def gen_AT_PW(AT_RW_path):
 def gen_rand_word_list(df_RWH, df_RWL, word_col_name):
     
     # randomize gen index of 50 RWH and 50 RHL
-    rand_high_idx=random.sample(range(0, df_RWH.shape[0]),50)
-    rand_low_idx=random.sample(range(0, df_RWL.shape[0]),50)
+    rand_high_idx=random.sample(range(0, df_RWH.shape[0]),40)
+    rand_low_idx=random.sample(range(0, df_RWL.shape[0]),40)
     rand_high_df=df_RWH.iloc[rand_high_idx]
     rand_low_df=df_RWL.iloc[rand_low_idx]
 
@@ -98,18 +98,18 @@ def gen_output(rw_pw_tuple_list):
     return rw_pw_df,pw_df
 
 def main():
-    basedir='/media/tlei/data/toolboxes/votc-langorth/DATA/IT_material'
-    RWH_fname='IT_RWH.txt' 
-    RWL_fname='IT_RWL.txt'
+    basedir='/media/tlei/data/toolboxes/votc-langorth/DATA/FR_material'
+    RWH_fname='FR_RWH2.txt' 
+    RWL_fname='FR_RWL2.txt'
 
     df_RWH=pd.read_csv(os.path.join(basedir,RWH_fname))
     df_RWL=pd.read_csv(os.path.join(basedir,RWL_fname))
 
-    ref_rw_df, rw_pw_df, pw_df=gen_PW(df_RWH,df_RWL,"LEMMA",'italian')
+    ref_rw_df, rw_pw_df, pw_df=gen_PW(df_RWH,df_RWL,"lemma",'french')
     # then save both dataframe 
-    ref_df_fname=os.path.join(basedir,'IT_mixed_RWHL.txt')
-    rw_pw_list_fname=os.path.join(basedir,'IT_RW_PW_match.txt')
-    pw_txt_fname=os.path.join(basedir,'IT_PW.txt')
+    ref_df_fname=os.path.join(basedir,'FR_mixed_RWHL2.txt')
+    rw_pw_list_fname=os.path.join(basedir,'FR_RW_PW_match2.txt')
+    pw_txt_fname=os.path.join(basedir,'FR_PW2.txt')
 
     ref_rw_df.to_csv(ref_df_fname,sep='\t', index=False)
     rw_pw_df.to_csv(rw_pw_list_fname, sep='\t',index=False)
@@ -142,6 +142,11 @@ def main():
     # illegal word
     # then I manually edit the RW_PW_match list to make it have 80 words only
     # then I use this code to create the 2 final list: FR_RW and FR_PW
+
+    # for FR CB2
+    # I edit the gen_rand_word_list function to take 40 from high freq and 40 from low freq
+    # then I edit the raw code under main to output the things under DATA/FR_material
+    
     '''
     rw_pw_list_fname=os.path.join('/media/tlei/data/toolboxes/votc-langorth/DATA/FR_material','FR_RW_PW_match.txt')
     df_rw_pw=pd.read_csv(rw_pw_list_fname,sep='\t')    

@@ -8,14 +8,14 @@ homedir = os.getenv('HOME')
 CB_group='CB2'
 
 # at tiger's mac, it will be as follow
-word_dir = join(homedir,f'toolboxes/votc-langorth/DATA/wordlist_for_VOTCLOC/wordlist_{CB_group}')
+word_dir = join(homedir,f'tlei/toolboxes/votc-langorth/DATA/wordlist_for_VOTCLOC/wordlist_{CB_group}')
 
 # at tiger's msi or bcbl, it will be as follow
 #word_dir = join(homedir, 'tlei', f'toolboxes/votc-langorth/DATA/wordlist_{CB_group}')
 
 
 #lang=['AT','EN','ES','EU','FR','IT']
-lang=['AT'] 
+lang=['FR'] 
 input_output_file = {f"{code}_RW_80_{CB_group}.txt": f"{code}_FF_80_{CB_group}.txt" for code in lang}
 
 # Define the English-to-Georgian mapping

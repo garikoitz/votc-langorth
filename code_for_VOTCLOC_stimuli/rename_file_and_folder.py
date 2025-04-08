@@ -8,8 +8,8 @@ import shutil
 homedir = os.getenv('HOME')
 # if in linux, need to add one tlei
 #base_dir = os.path.join(homedir, "toolboxes/fLoc/stimuli")
-base_dir='/home/tlei/Desktop/Making_VOTCLOC_CN_STIM'
-langs=['CN'] #['AT','EN','ES','EU','FR','IT']
+base_dir='/media/tlei/data/toolboxes/fLoc/stimuli'
+langs=['FR'] #['AT','EN','ES','EU','FR','IT']
 cats=['RW','CS','FF','SC']
 CB_group=2
 orig_targ_dict = {f"{code}_{cat}": f"{code}_{cat}{CB_group}" for code in langs for cat in cats }
