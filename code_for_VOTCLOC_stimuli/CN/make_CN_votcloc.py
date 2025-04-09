@@ -475,8 +475,8 @@ def preproc():
     homedir = Path(os.getenv('HOME'))
     word_dir = homedir / 'toolboxes/votc-langorth/DATA/CN_material'
     types=['RW','FF'] #['RW','FF']
-    output_dir=word_dir / 'derivatives'
-
+    output_dir=word_dir / 'derivatives' 
+    force=True
     # crop everything
     for type in types:
         image_dir= word_dir / f'Transbg_CN_{type}'
@@ -498,7 +498,15 @@ def preproc():
                             image_path,
                             output_dir,
                             force)
-            
+
+    # change the ret-letsize-25 image background to grey
+    for type in types:
+        letsize_25_image_dir=output_dir/ 'ret' / f'CN_{type}_letsize-25_ratio-0.3'
+        image_lst= get_image_files(letsize_25_image_dir)
+        for img in image_lst:
+            image_path=Path(img)
+            change_bg(image_path,
+                      force)            
     # the ratio I checked, it's gonna be 0.3 for letsize-25
     #   
     # then for ret, I need to resize it to letsize25 50 100, today is only 25
@@ -708,3 +716,55 @@ def resize_to_make_50_100():
                 output_mat,
                 force
             )
+
+# the change BG function is used to make fixRW and fixFF
+def change_bg(
+    image_path: Path,
+    force: bool = False
+) -> None:
+    """
+    Convert an image of white text on a transparent background into two variants:
+      1) black text on a white background
+      2) black text on a gray background
+
+    The images will be saved in the given output_dir.
+    
+    Args:
+        image_path (Path): The path to the source image (white text on transparent bg).
+        output_dir (Path): The directory where output images will be saved.
+        force (bool): If True, overwrite output files if they already exist.
+                      If False, raise an exception if output files exist.
+    """
+    image_path=Path(image_path)
+    output_dir=image_path.parent.parent  / 'ret_fix' 
+
+    # Ensure the output directory exists
+    output_dir.mkdir(parents=True, exist_ok=True)
+
+    grey_bg_output=output_dir / image_path.name
+
+    # --- Open the original image in RGBA mode ---
+    with Image.open(image_path).convert("RGBA") as img:
+
+        # Extract pixel data
+        pixels = img.getdata()
+
+        # Create a new RGBA image for black text on transparent background
+        new_data = []
+        for (r, g, b, a) in pixels:
+            # If it is black, we maintain it 
+            if r>130 :
+                new_data.append((0, 0, 0, 0))    # remain transparent
+            else:
+                new_data.append((r,g,b,a))
+        black_text_img = Image.new("RGBA", img.size)
+        black_text_img.putdata(new_data)
+
+
+        # 2) Composite onto a GRAY background
+        grey_bg = Image.new("RGBA", img.size, (128, 128, 128, 255))
+        grey_bg.alpha_composite(black_text_img)
+        grey_bg_final = grey_bg.convert("RGB")
+        grey_bg_final.save(grey_bg_output)
+
+    print(f"Successfully created: \n  - {grey_bg_output}")
