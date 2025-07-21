@@ -169,11 +169,11 @@ def main(backgrounds_directory, base_output_dir, word_list, category_of_your_sti
 # FOLDERS
 homedir = os.getenv('HOME')
 # if in linux, need to add one tlei
-backgrounds_directory = join(homedir, "tlei/toolboxes/fLoc/stimuli/scrambled")
-base_output_dir = join(homedir, "tlei/toolboxes/fLoc/stimuli")
+backgrounds_directory = join(homedir, "toolboxes/fLoc/stimuli/scrambled")
+base_output_dir = join(homedir, "Desktop")
 # for Ubuntu is "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf"
 # for mac is "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
-fonts_directory = "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf"
+fonts_directory = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
 
 # VARIABLES
 font_size = 150
@@ -186,10 +186,10 @@ fnt = ImageFont.truetype(fonts_directory, font_size)
 # https://translit.cc/ge/
 # put here the name of the word list to be converted
 
-langs=['FR'] #['AT','EN','ES','EU','FR','IT']
-cats=['RW','CS','FF']
+langs=['AT'] #['AT','EN','ES','EU','FR','IT']
+cats=['CS','FF']
 CB_group=2
-word_dir = join(homedir,f'tlei/toolboxes/votc-langorth/DATA/wordlist_for_VOTCLOC/wordlist_CB{CB_group}') 
+word_dir = join(homedir,f'toolboxes/votc-langorth/DATA/wordlist_for_VOTCLOC/wordlist_CB{CB_group}') 
 categories_textfiles_dict = {f"{code}_{cat}{CB_group}": f"{code}_{cat}_80_CB{CB_group}.txt" for code in langs for cat in cats }
 
 #categories_textfiles_dict = {
@@ -227,6 +227,8 @@ for category_of_your_stimuli in categories_textfiles_dict.keys():
         main(backgrounds_directory, base_output_dir, word_list, category_of_your_stimuli, 
              True, False, False, fnt, False)
     else:
+        #doWORD, doSC, doCB, fnt, one_folder
+        print(f'Doing {category_of_your_stimuli}')
         main(backgrounds_directory, base_output_dir, word_list, category_of_your_stimuli, 
              True, False, False, fnt, False)
         
