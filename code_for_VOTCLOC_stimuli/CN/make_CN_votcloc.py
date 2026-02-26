@@ -141,6 +141,11 @@ def crop_word(img_path:Path, output_dir:Path, reference:str, force:bool ):
         is if from ret or for floc
         if it is ret, then we are choosing from black word and white bg
         if it is floc, we are choosing from white word and transparent bg
+
+        img_path="/home/irakeinu/toolboxes/fLoc/stimuli/intermediate_files/CH_words_img"
+        output_dir="/home/irakeinu/toolboxes/fLoc/stimuli/CH_RW"
+        reference="fLoc"
+        force=True
     '''
     imagename=img_path.name
     output_name=imagename.replace('.png','_crop.png')
@@ -161,8 +166,10 @@ def crop_word(img_path:Path, output_dir:Path, reference:str, force:bool ):
         # it is a 308x308x4, so we get the Alpha info
         alpha_channel = image_data[:, :, 3]
         # white mask is the T/F table for the white 
-        white_mask = (image_data[:, :, 0] == 255) & (image_data[:, :, 1] == 255) & (image_data[:, :, 2] == 255) & (alpha_channel > 0)
-        # Then get the coordication of the white part
+        # white_mask = (image_data[:, :, 0] == 255) & (image_data[:, :, 1] == 255) & (image_data[:, :, 2] == 255) & (alpha_channel > 0)
+        # for chinese chars is black text
+        white_mask = (image_data[:, :, 0] == 0) & (image_data[:, :, 1] == 0) & (image_data[:, :, 2] == 0) & (alpha_channel > 0)
+        # Then get the coordinates of the white part
         white_coords = np.argwhere(white_mask)
         # get x y limit
         (y_min, x_min), (y_max, x_max) = white_coords.min(axis=0), white_coords.max(axis=0)
@@ -181,18 +188,18 @@ def crop_word(img_path:Path, output_dir:Path, reference:str, force:bool ):
 
     # return the size of the cropped image
     return x,y
-# src_dir=Path('/home/tlei/Desktop')
-# images=[f'IT_word{i+1}_letsize25.png' for i in range(4)]
-# output_dir=Path(src_dir) / "crop_ret_ref"
+src_dir=Path('/home/irakeinu/toolboxes/fLoc/stimuli/intermediate_files/CH_words_img')
+images=[f'CH_RW-{i+1}.png' for i in range(80)]
+output_dir=Path(src_dir) / "CH_words_img_crop"
 
-# size=[]
-# for image in images:
-#     img_path=Path(src_dir) / image
-#     reference='ret'
-#     force=True
-#     x,y=crop_word(img_path, output_dir, reference, force)
-#     #size is the x y for letsize 25
-#     size.append((x,y))
+size=[]
+for image in images:
+    img_path=Path(src_dir) / image
+    reference='floc'
+    force=True
+    x,y=crop_word(img_path, output_dir, reference, force)
+    #size is the x y for letsize 25
+    size.append((x,y))
 
 # need to find a way to calculate the ratio of the Chinese word
 
@@ -570,19 +577,18 @@ def preproc():
                 force
             )
 
-
-
-
-
-
-
-
-
-
-def create_CN_fig_overlay(background_path, figure_path, output_path):
+def create_CN_fig_overlay(background_path, figure_path, output_path, convert_to_white=False):
     background = Image.open(background_path)
-    figure = Image.open(figure_path).convert("RGBA") 
-    pic_width, pic_height = background.width, background.height
+    figure = Image.open(figure_path).convert("RGBA")
+
+    if convert_to_white:
+        pixels = figure.getdata()
+        new_pixels = [
+            (255, 255, 255, a) if (r, g, b) == (0, 0, 0) else (r, g, b, a)
+            for (r, g, b, a) in pixels
+        ]
+        figure.putdata(new_pixels)
+
     # Get the dimensions of the figure and background
     fig_width, fig_height = figure.width, figure.height
     pic_width, pic_height = background.width, background.height
@@ -639,28 +645,6 @@ def create_CN_SC(background_path, figure_path, output_path, tile_size=10):
 
     # Save the result
     background.save(output_path)
-
-
-def main ():
-    # 1. get the image from output folder
-
-    # 2. crop the image and have secondary output
-
-    # 3. For RW, plot RW and save
-
-    # 4. For SC, based on the crop image doing scamble
-
-    # 5. For FF, need to manually cut, then save as L and R, and then flip the left and right 
-        # here aslo based on the crop box, crop only by x not y 
-    return
-            
-### Section below is for excuting
-###
-# FOLDERS
-homedir = os.getenv('HOME')
-word_dir = join(homedir,'toolboxes/votc-langorth/DATA/CN_stim')
-backgrounds_directory = join(homedir,"toolboxes/fLoc/stimuli/scrambled")
-base_output_dir = join(homedir,"Desktop")
 
 
 
@@ -768,3 +752,47 @@ def change_bg(
         grey_bg_final.save(grey_bg_output)
 
     print(f"Successfully created: \n  - {grey_bg_output}")
+
+def main ():
+    # 1. get the image from output folder
+
+    # 2. crop the image and have secondary output
+
+    # 3. For RW, plot RW and save
+
+    # 4. For SC, based on the crop image doing scamble
+
+    # 5. For FF, need to manually cut, then save as L and R, and then flip the left and right 
+        # here aslo based on the crop box, crop only by x not y 
+    return
+            
+### Section below is for excuting
+###
+# FOLDERS
+homedir = os.getenv('HOME')
+word_dir = join(homedir,'toolboxes/votc-langorth/DATA/CN_stim')
+backgrounds_directory = join(homedir,"toolboxes/fLoc/stimuli/scrambled")
+base_output_dir = join(homedir,"Desktop")
+
+# Overlay all cropped word images onto scrambled backgrounds
+cropped_dir  = Path(homedir) / 'toolboxes/fLoc/stimuli/intermediate_files/CH_words_img/CH_words_img_crop'
+scrambled_dir = Path(backgrounds_directory)
+output_overlay_dir = Path(base_output_dir) / 'CN_RW_overlay'
+output_overlay_dir.mkdir(parents=True, exist_ok=True)
+
+figure_paths     = sorted(cropped_dir.glob('*.png'))
+background_paths = sorted(scrambled_dir.glob('*.jpg'))
+
+# Randomly sample one background per figure (without replacement if possible)
+sampled_backgrounds = random.sample(background_paths, len(figure_paths)) \
+    if len(background_paths) >= len(figure_paths) \
+    else [background_paths[random.randint(0, len(background_paths) - 1)] for _ in figure_paths]
+
+for i, (figure_path, background_path) in enumerate(zip(figure_paths, sampled_backgrounds)):
+    output_filename = figure_path.stem.replace('_crop', '') + '_overlay.png'
+    output_path = output_overlay_dir / output_filename
+    create_CN_fig_overlay(background_path, figure_path, output_path, convert_to_white=True)
+    print(f'[{i+1}/{len(figure_paths)}] {figure_path.name} -> {output_path.name}')
+
+print(f'\nDone! {len(figure_paths)} overlays saved to: {output_overlay_dir}')
+
