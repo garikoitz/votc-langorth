@@ -600,6 +600,99 @@ def create_CN_fig_overlay(background_path, figure_path, output_path, convert_to_
     return
 
 
+def create_image_fig_overlay(background_path, figure_path, output_dir, tile_size=5):
+    """
+    Creates two overlay versions of a figure centered on a background:
+      - image_RI/: figure pasted as-is.
+      - image_SC/: only the tight bounding box of the figure's non-transparent
+                   pixels is scrambled into tile_size x tile_size squares,
+                   then pasted back before compositing onto the background.
+
+    Args:
+        background_path: Path to the background image.
+        figure_path:     Path to the figure image (RGBA with transparency).
+        output_dir:      Base output directory; image_RI/ and image_SC/ are created inside.
+        tile_size (int): Tile side length in pixels for scrambling (default 5).
+    """
+    background_path = Path(background_path)
+    figure_path     = Path(figure_path)
+    output_dir      = Path(output_dir)
+
+    ri_dir = output_dir / 'image_RI'
+    sc_dir = output_dir / 'image_SC'
+    ri_dir.mkdir(parents=True, exist_ok=True)
+    sc_dir.mkdir(parents=True, exist_ok=True)
+
+    output_name = figure_path.stem + '_overlay.png'
+
+    figure = Image.open(figure_path).convert("RGBA")
+
+    # Scale figure up by 20%
+    new_w = int(figure.width * 1.2)
+    new_h = int(figure.height * 1.2)
+    figure = figure.resize((new_w, new_h), Image.Resampling.LANCZOS)
+
+    fig_w, fig_h = figure.size
+
+    background = Image.open(background_path)
+    pic_w, pic_h = background.size
+    paste_x = (pic_w - fig_w) // 2
+    paste_y = (pic_h - fig_h) // 2
+
+    # --- RI: straight overlay ---
+    bg_ri = background.copy()
+    bg_ri.paste(figure, (paste_x, paste_y), figure)
+    bg_ri.save(ri_dir / output_name)
+
+    # --- SC: scramble only within the tight bounding box of non-transparent pixels ---
+    fig_arr = np.array(figure)
+    alpha = fig_arr[:, :, 3]
+    non_transparent = np.argwhere(alpha > 0)
+
+    if len(non_transparent) == 0:
+        y_min, x_min, y_max, x_max = 0, 0, fig_h, fig_w
+    else:
+        (y_min, x_min) = non_transparent.min(axis=0)
+        (y_max, x_max) = non_transparent.max(axis=0)
+        y_max += 1  # make end-exclusive
+        x_max += 1
+
+    # Crop the tight bounding box from the figure
+    bbox_region = figure.crop((x_min, y_min, x_max, y_max))
+    bbox_w = x_max - x_min
+    bbox_h = y_max - y_min
+
+    # Slice bbox into tile_size x tile_size tiles and shuffle them
+    num_tiles_x = bbox_w // tile_size
+    num_tiles_y = bbox_h // tile_size
+
+    tiles = [
+        bbox_region.crop((tx * tile_size, ty * tile_size,
+                          (tx + 1) * tile_size, (ty + 1) * tile_size))
+        for ty in range(num_tiles_y)
+        for tx in range(num_tiles_x)
+    ]
+    random.shuffle(tiles)
+
+    scrambled_bbox = Image.new("RGBA", (num_tiles_x * tile_size, num_tiles_y * tile_size), (0, 0, 0, 0))
+    for idx, tile in enumerate(tiles):
+        tx = idx % num_tiles_x
+        ty = idx // num_tiles_x
+        scrambled_bbox.paste(tile, (tx * tile_size, ty * tile_size))
+
+    # Place the scrambled bbox back into a copy of the figure at the original bbox position
+    scrambled_figure = figure.copy()
+    scrambled_figure.paste(scrambled_bbox, (x_min, y_min))
+
+    # Overlay onto background
+    bg_sc = background.copy()
+    bg_sc.paste(scrambled_figure, (paste_x, paste_y), scrambled_figure)
+    bg_sc.save(sc_dir / output_name)
+
+    print(f"Saved RI: {ri_dir / output_name}")
+    print(f"Saved SC: {sc_dir / output_name}")
+
+
 def create_CN_SC(background_path, figure_path, output_path, tile_size=10):
     # Load the background and figure images
     background = Image.open(background_path)
@@ -795,4 +888,24 @@ for i, (figure_path, background_path) in enumerate(zip(figure_paths, sampled_bac
     print(f'[{i+1}/{len(figure_paths)}] {figure_path.name} -> {output_path.name}')
 
 print(f'\nDone! {len(figure_paths)} overlays saved to: {output_overlay_dir}')
+
+# --- create_image_fig_overlay call ---
+# Figures: transparent PNGs from images_transparent
+# Backgrounds: scrambled JPGs (same pool as above)
+# Output: image_RI/ and image_SC/ created inside images_transparent/
+img_figure_dir    = Path(homedir) / 'toolboxes/fLoc/stimuli/intermediate_files/images_transparent'
+img_output_dir    = img_figure_dir   # image_RI/ and image_SC/ will be created here
+
+img_figure_paths     = sorted(img_figure_dir.glob('*.png'))
+img_background_paths = sorted(scrambled_dir.glob('*.jpg'))
+
+img_sampled_backgrounds = random.sample(img_background_paths, len(img_figure_paths)) \
+    if len(img_background_paths) >= len(img_figure_paths) \
+    else [img_background_paths[random.randint(0, len(img_background_paths) - 1)] for _ in img_figure_paths]
+
+for i, (figure_path, background_path) in enumerate(zip(img_figure_paths, img_sampled_backgrounds)):
+    create_image_fig_overlay(background_path, figure_path, img_output_dir, tile_size=5)
+    print(f'[{i+1}/{len(img_figure_paths)}] {figure_path.name} -> image_RI/ & image_SC/')
+
+print(f'\nDone! {len(img_figure_paths)} image overlays saved to: {img_output_dir}')
 
