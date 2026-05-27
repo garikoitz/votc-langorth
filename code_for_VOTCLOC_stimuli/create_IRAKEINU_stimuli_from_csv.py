@@ -8,6 +8,7 @@ from pathlib import Path
 # ──────────────────────────────────────────────────────────────────
 homedir    = os.getenv('HOME')
 repo_root  = os.path.join(homedir, 'toolboxes/votc-langorth')
+output_root = os.path.join(homedir, 'toolboxes/BfLoc_video/stimuli')
 
 csv_path        = os.path.join(homedir, 'Downloads/VOT_chinese_words.csv')
 backgrounds_dir = os.path.join(homedir, 'toolboxes/BfLoc/stimuli/scrambled')
@@ -16,13 +17,13 @@ transbg_ff_dir  = os.path.join(repo_root, 'DATA/CN_material/Transbg_CN_FF')
 zh_font_path = '/Library/Fonts/MacKTGB2312.ttf'
 en_font_path = '/Library/Fonts/Arial Unicode.ttf'
 
-ch_rw_dir  = os.path.join(repo_root, 'CH_RW')
-ch_sc_dir  = os.path.join(repo_root, 'CH_SC')
-en_rw_dir  = os.path.join(repo_root, 'EN_RW')
-en_sc_dir  = os.path.join(repo_root, 'EN_SC')
-en_ff_dir  = os.path.join(repo_root, 'EN_FF')
-ch_ff_dir  = os.path.join(repo_root, 'CH_FF')
-lang_sc_dir = os.path.join(repo_root, 'Lang_SC')
+ch_rw_dir  = os.path.join(output_root, 'CH_RW')
+ch_sc_dir  = os.path.join(output_root, 'CH_SC')
+en_rw_dir  = os.path.join(output_root, 'EN_RW')
+en_sc_dir  = os.path.join(output_root, 'EN_SC')
+en_ff_dir  = os.path.join(output_root, 'EN_FF')
+ch_ff_dir  = os.path.join(output_root, 'CH_FF')
+lang_sc_dir = os.path.join(output_root, 'Lang_SC')
 
 # ──────────────────────────────────────────────────────────────────
 # Georgian substitution table (same as gen_FF-list_from_RW-list.py)
@@ -231,7 +232,7 @@ def main():
         )
 
         # EN_RW — English real word on scrambled bg
-        en_rw_fnt = get_font(en_font_path, en_word, canvas_width)
+        en_rw_fnt = get_font(en_font_path, en_word, canvas_width, start_size=180)
         create_word_on_bg(
             bg_en_rw[idx],
             os.path.join(en_rw_dir, f'EN_RW-{item_id}.jpg'),
@@ -246,7 +247,7 @@ def main():
         )
 
         # EN_FF — English → Georgian letter-substitution on scrambled bg
-        en_fnt = get_font(en_font_path, geo_word, canvas_width)
+        en_fnt = get_font(en_font_path, geo_word, canvas_width, start_size=180)
         create_word_on_bg(
             bg_en_ff[idx],
             os.path.join(en_ff_dir, f'EN_FF-{item_id}.jpg'),
@@ -273,7 +274,7 @@ def main():
     random.shuffle(pool)
     os.makedirs(lang_sc_dir, exist_ok=True)
     for i, (src_dir, fname) in enumerate(pool):
-        shutil.copy2(os.path.join(repo_root, src_dir, fname),
+        shutil.copy2(os.path.join(output_root, src_dir, fname),
                      os.path.join(lang_sc_dir, f'Lang_SC-{i+1}.jpg'))
     print(f"  Lang_SC → {lang_sc_dir}  "
           f"(CH:{sum(1 for d,_ in pool if d=='CH_SC')}  "
