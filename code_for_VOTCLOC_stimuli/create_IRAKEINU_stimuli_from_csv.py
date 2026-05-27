@@ -82,15 +82,16 @@ def create_word_on_bg(bg_path, output_path, word, fnt):
     bbox = draw.textbbox((0, 0), word, font=fnt)
     w, h = bbox[2] - bbox[0], bbox[3] - bbox[1]
     W, H = bg.size
+    # Subtract bbox origin to correct for font bearing offset
     draw.text(
-        ((W - w) / 2, (H - h) / 2),
+        ((W - w) / 2 - bbox[0], (H - h) / 2 - bbox[1]),
         word, font=fnt,
         fill=255, stroke_width=2, stroke_fill=255
     )
     bg.save(output_path, 'JPEG')
 
 
-def create_scrambled_word_on_bg(bg_path, output_path, word, fnt, tile_size=10):
+def create_scrambled_word_on_bg(bg_path, output_path, word, fnt, tile_size=20):
     """
     Scramble the word bounding box with tile_size×tile_size pixel tiles
     and overlay it centered on the same scrambled background as the RW.

@@ -24,25 +24,25 @@ from PIL import Image
 homedir = Path(os.getenv('HOME'))
 
 # Transparent PNG figures (RGBA)
-figures_dir   = Path('/home/irakeinu/Documents/intermediate_files/images_transparent')
+figures_dir   = homedir / 'toolboxes/votc-langorth/DATA/images_transparent'
 
 # Scrambled background JPGs
-scrambled_dir = homedir / 'toolboxes/BfLoc_video/stimuli/scrambled'
+scrambled_dir = homedir / 'toolboxes/BfLoc/stimuli/scrambled'
 
 # Output base directory (IMG_RI/ and IMG_SC/ will be created here)
-output_base_dir = Path('/home/irakeinu/Downloads/IMG_overlay')
+output_base_dir = homedir / 'toolboxes/votc-langorth'
 
-# Scale factor: 1.0 = original size, 1.2 = 20% bigger, 0.8 = 20% smaller
+# Scale factor: 1.0 = original size, 1.5 = 50% bigger
 scale_factor = 1.5
 
 # Tile size for scrambling (pixels)
-tile_size = 10
+tile_size = 20
 
 # Random seed for reproducibility (set to None for a different result each run)
-random_seed = 42
+random_seed = None
 
 # CSV mapping file: column A = new INDEX, column D = original multipicID
-img2id_csv = Path('/home/irakeinu/Downloads/Img2ID.csv')
+img2id_csv = homedir / 'toolboxes/votc-langorth/DATA/Img2ID.csv'
 
 # ---------------------------------------------------------------------------
 
