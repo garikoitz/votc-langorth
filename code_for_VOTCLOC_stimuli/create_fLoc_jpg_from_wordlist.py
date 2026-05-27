@@ -4,7 +4,7 @@ from PIL import Image, ImageDraw, ImageFont
 join = os.path.join
 
 '''
-This script is used for generate the fLoc stimuli,
+This script is used for generate the BfLoc_video stimuli,
 it will create RW, SC, FF
 We also need use CS
 
@@ -169,7 +169,7 @@ def main(backgrounds_directory, base_output_dir, word_list, category_of_your_sti
 # FOLDERS
 homedir = os.getenv('HOME')
 # if in linux, need to add one tlei
-backgrounds_directory = join(homedir, "toolboxes/fLoc/stimuli/scrambled")
+backgrounds_directory = join(homedir, "toolboxes/BfLoc_video/stimuli/scrambled")
 base_output_dir = join(homedir, "Desktop")
 # for Ubuntu is "/usr/share/fonts/truetype/msttcorefonts/Arial.ttf"
 # for mac is "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
@@ -179,7 +179,7 @@ fonts_directory = "/System/Library/Fonts/Supplemental/Arial Unicode.ttf"
 font_size = 150
 doWORD = True
 fnt = ImageFont.truetype(fonts_directory, font_size)
-# These are the lists of words we need to generate, this comes from fLoc
+# These are the lists of words we need to generate, this comes from BfLoc_video
 #         stim_set1 = {'body' 'JP_word1' 'adult' 'ff' 'cb'};
 #         stim_set2 = {'limb' 'JP_word2' 'child' 'cs' 'sc'};
 # Web page to translate to Georgian, just copy and paste lists

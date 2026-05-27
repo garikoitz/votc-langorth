@@ -1,14 +1,14 @@
 import os
 import fnmatch
 import shutil
-# for the fLoc 
+# for the BfLoc_video 
 ########
 #simply add 1 and 2 to file names
 ########
 homedir = os.getenv('HOME')
 # if in linux, need to add one tlei
-#base_dir = os.path.join(homedir, "toolboxes/fLoc/stimuli")
-base_dir='/media/tlei/data/toolboxes/fLoc/stimuli'
+#base_dir = os.path.join(homedir, "toolboxes/BfLoc_video/stimuli")
+base_dir='/media/tlei/data/toolboxes/BfLoc_video/stimuli'
 langs=['FR'] #['AT','EN','ES','EU','FR','IT']
 cats=['RW','CS','FF','SC']
 CB_group=2
