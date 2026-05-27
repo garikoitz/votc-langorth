@@ -60,7 +60,7 @@ def get_image_files(directory):
             for fname in os.listdir(directory)
             if os.path.splitext(fname)[1].lower() in supported]
 
-def get_font(font_path, text, max_width, start_size=150, min_size=40):
+def get_font(font_path, text, max_width, start_size=225, min_size=40):
     """Return the largest TrueType font that renders text within max_width."""
     size = start_size
     while size >= min_size:
@@ -91,7 +91,7 @@ def create_word_on_bg(bg_path, output_path, word, fnt):
     bg.save(output_path, 'JPEG')
 
 
-def create_scrambled_word_on_bg(bg_path, output_path, word, fnt, tile_size=20):
+def create_scrambled_word_on_bg(bg_path, output_path, word, fnt, tile_size=15):
     """
     Scramble the word bounding box with tile_size×tile_size pixel tiles
     and overlay it centered on the same scrambled background as the RW.
@@ -139,7 +139,7 @@ def create_scrambled_word_on_bg(bg_path, output_path, word, fnt, tile_size=20):
     bg_rgb.convert("L").save(output_path, "JPEG")
 
 
-def create_ch_ff(bg_path, output_path, n_chars, ff_image_paths, gap=2):
+def create_ch_ff(bg_path, output_path, n_chars, ff_image_paths, gap=-3):
     """
     Tile n_chars randomly chosen Transbg_CN_FF images horizontally,
     centered on a scrambled grayscale background.
@@ -150,8 +150,8 @@ def create_ch_ff(bg_path, output_path, n_chars, ff_image_paths, gap=2):
 
     imgs = [Image.open(p).convert('RGBA') for p in chosen]
 
-    # Scale down to 0.6 of original size
-    imgs = [img.resize((int(img.width * 0.6), int(img.height * 0.6)),
+    # Scale to 0.8 of original size
+    imgs = [img.resize((int(img.width * 0.8), int(img.height * 0.8)),
                        Image.Resampling.LANCZOS) for img in imgs]
 
     # Uniform height: scale each image to match the tallest
